@@ -1,0 +1,194 @@
+{% extends 'baseheader.html' %}
+{% block title %}微水洗车{% endblock %}
+{% block css%}
+<style>
+.contain{border: 1px solid#e3e3e3;width: 800px;margin: 30px auto 50px}
+.contain-title span{display: block;padding: 8px 0 8px 15px}
+.contain-body{border-top: 1px solid #e3e3e3;border-bottom: 1px solid #e3e3e3;background-color: #fff;padding: 40px 0 20px 30px;height: 240px}
+.contain-footer{background: #fff;height: 80px}
+select{display:block;height: 20px;font-size: 12px}
+.service-detail{display:block;width: 130px;text-align: right;}
+#select-model{width: 148px;float: left;margin:-20px 0 0 140px}
+#select-case{width: 148px;float: left;margin:-20px 0 0 140px}
+#single-pay-time{width: 148px;float: left;margin: -20px 0 0 140px;height: 20px}
+#month-pay-time{width: 148px;float: left;margin: -20px 0 0 140px;height: 20px}
+.contain-detail {padding: 7px 0;}
+.contain-left{width: 380px;float: left;}
+.contain-right {float:left;border: 1px solid#e3e3e3;width: 350px;margin-left: 20px}
+.contain-right span{display:block;font-size: 15px;padding: 8px 0 0 5px }
+.contain-right ul li{padding:8px 0 0 20px;font-size: 12px }
+#case-comments{color: #8cffb5;font-size: 13px}
+#case-show{float: left;margin:-19px 0 0 292px;border: none;background: none;text-decoration:underline;color:#FF9D58;}
+#case-show:hover{color: #ffbd58}
+#case-submit{width: 120px;height: 30px;background-color: #ff3c3c;border: none;color: #fff;margin: 20px 0 0 35px;border-radius: 4px;}
+#car-num{width: 148px;float: left;margin: -20px 0 0 140px}
+.error{display: block;float: left;margin:-20px 0 0 290px;text-align: left;width: 130px;color: #ff0000}
+</style>
+{% endblock %}
+
+{% block container %}
+    <div class="contain">
+        <div class="contain-title">
+         <span>微水洗车费</span>
+        </div>
+
+        <form class="form-horizontal" id="site-form" action="/local_life/car_washing/detail/" method="post">
+        {% csrf_token %}
+        <div class="contain-body">
+        <div class="contain-left">
+        <div class="contain-detail">
+            <span class="service-detail">选择付费模式:</span>  <select name="washing-type" id="select-model">
+        <option value="1" selected="selected">单次:15元/次</option>
+        <option value="2">包月:120元/月,10次/月</option>
+        <option value="3">包季:300元/季,10次/月</option>
+        <option value="4">包年:1000元/年,10次/月</option>
+      </select>
+        </div>
+
+        <div class="contain-detail" id="contain-detail-2">
+            <span class="service-detail">单次付费选择时间:</span>
+            <input type="text" id="single-pay-time" name="single-time" readonly=true>
+            {% ifequal single_time_error True %}
+            <span class="error">{{ error_message }}</span>
+            {% endifequal %}
+        </div>
+
+        <div class="contain-detail">
+            <span class="service-detail">选择洗车方案:</span>
+            <select name="washing-case" id="select-case" >
+            <option value="1">方案一</option>
+            <option value="2">方案二</option>
+            <option value="3">方案三</option>
+            </select>
+            <input type="button" id="case-show" value="洗车方案说明">
+        </div>
+
+        <div class="contain-detail">
+           <span class="service-detail">选择洗车起始时间:</span>
+            <input type="text" id="month-pay-time" name="month-time" readonly=true>
+            {% ifequal month_time_error True %}
+            <span class="error">{{error_message}}</span>
+            {% endifequal %}
+        </div>
+
+         <div class="contain-detail">
+             <span class="service-detail">车牌号:</span>
+             <input type="text" id="car-num" name="car-num" placeholder="请填写车牌号" style="height:20px;font-size: 12px">
+             {% ifequal car_num_error True %}
+            <span class="error">{{ error_message }}</span>
+            {% endifequal %}
+         </div>
+
+      </div>
+
+       <div class="contain-right">
+        <span><b>洗车方案</b></span>
+        <ul>
+            <li>
+                方案一:每月的1、4、7、10、13、16、19、22、25、28
+            </li>
+            <li>
+                方案二:每月的2、5、8、11、14、17、20、23、26、29
+            </li>
+            <li>
+                方案三:每月的3、6、9、12、15、18、21、24、27、30
+            </li>
+             <span id="case-comments">备注:选择方案之后，请用户在指定时间将车停靠在停车位，如果车不在，则默认用户不需要洗车。且该次数作废！</span>
+        </ul>
+        </div>
+      </div>
+
+        <div class="contain-footer">
+         <input type="submit" value="提交" id="case-submit" />
+        </div>
+      </form>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+<script src="/static/js/jquery-ui.min.js"></script>
+<script src="/static/js/timepicker.js"></script>
+ <link href="/static/css/jquery-ui-1.7.2.custom.css" rel="stylesheet">
+
+   <script>
+    jQuery(function($){
+            $.datepicker.regional['zh-CN'] = {
+                closeText: '确定',
+                prevText: '<上月',
+                nextText: '下月>',
+                currentText: '今天',
+                monthNames: ['一月','二月','三月','四月','五月','六月',
+                '七月','八月','九月','十月','十一月','十二月'],
+                monthNamesShort: ['一','二','三','四','五','六',
+                '七','八','九','十','十一','十二'],
+                dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+                dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],
+                dayNamesMin: ['日','一','二','三','四','五','六'],
+                weekHeader: '周',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: true,
+                yearSuffix: '年'};
+            $.datepicker.setDefaults($.datepicker.regional['zh-CN']);
+        });
+
+$(document).ready(function(){
+    //       $(".contain-right").attr("hidden","true");
+    //       $("#select-case").attr("disabled","disabled");
+    //       $("#month-pay-time").attr("disabled","disabled")
+    //       $("#case-show").attr("disabled","disabled")
+            obj=document.getElementById("select-model")
+            if (obj.value==1){
+          $(".contain-right").attr("hidden","true");
+           $("#select-case").attr("disabled","disabled")
+           $("#month-pay-time").attr("disabled","disabled");
+           $("#case-show").attr("disabled","disabled")
+           $("#single-pay-time").removeAttr("disabled","disabled")
+        }
+        else{
+           $(".contain-right").removeAttr("hidden","true");
+           $("#select-case").removeAttr("disabled","disable");
+           $("#month-pay-time").removeAttr("disabled","disable");
+           $(".case-show").removeAttr("disabled","disabled");
+           $("#single-pay-time").attr("disabled","disabled");
+        }
+
+            $('#single-pay-time').datepicker({
+                duration: '',
+                //showTime: true,
+                minDate:0,
+                constrainInput: false
+            });
+           $('#month-pay-time').datepicker({
+                duration: '',
+                //showTime: true,
+                minDate:0,
+                constrainInput: false
+            });
+  })
+ $("#select-model").change(function(){
+        if (this.value==1){
+          $(".contain-right").attr("hidden","true");
+           $("#select-case").attr("disabled","disabled")
+           $("#month-pay-time").attr("disabled","disabled");
+           $("#case-show").attr("disabled","disabled")
+           $("#single-pay-time").removeAttr("disabled","disabled")
+        }
+        else{
+           $(".contain-right").removeAttr("hidden","true");
+           $("#select-case").removeAttr("disabled","disable");
+           $("#month-pay-time").removeAttr("disabled","disable");
+           $("#case-show").removeAttr("disabled","disabled");
+           $("#single-pay-time").attr("disabled","disabled");
+        }
+    })
+
+
+   $("#case-show").click(function(){
+       $(".contain-right").toggle();
+   })
+
+   </script>
+{% endblock %}

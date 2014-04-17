@@ -1,0 +1,375 @@
+{% extends "worker_base.html" %}
+{% block title %}投诉管理{% endblock %}
+{% block css %}
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .complain1, span, button {
+            font-size: 15px;
+
+        }
+
+        tr:first-child {
+            background-color: #f3f3f3;;
+        }
+
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+{#            border: 1px solid red;#}
+            width: 1171px !important;
+        }
+        .complain_header{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+        .complain_header li{
+            padding-left: 116px;
+            float: left;
+        }
+
+        .complain_header_deal{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+        .complain_header_deal li{
+            padding-left: 90px;
+            float: left;
+        }
+
+        .vessel .vessel_titBox {
+            background: url("") repeat-x scroll 0 -226px rgba(0, 0, 0, 0);
+            border-bottom: 1px solid #00a1e9;
+            height: 40px;
+            line-height: 40px;!important
+    }
+        .vessel{
+            border: 0px ;
+        }
+
+        .complain_right_container{
+
+        }
+        .complain_right_container li{
+            float:left;
+            text-align: center;
+            padding-top: 8px;
+            height: 80px;
+{#            border: 1px solid red;#}
+        }
+      .border_style{
+{#          border-left:2px solid #eeeeee#}
+      }
+    </style>
+
+{% endblock %}
+{% block right_container %}
+            <!-- 中部 start -->
+            <div style="width: 944px;overflow: auto;border-top: 0px;margin-left: 5px;float: left;background-color: #ffffff">
+                  <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a href="/complain/?deal_status=4"
+                                class="btn_type btn {% if btn_style == 4 %}btn-primary{% endif %} "
+                                style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 70px">
+                               已受理
+                             </a>
+                            <a href="/complain/?deal_status=2"
+                               class="btn_type btn {% if btn_style == 2 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 80px">
+                               处理中
+                            </a>
+                            <a href="/complain/?deal_status=3"
+                               class="btn_type btn {% if btn_style == 3 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 80px">
+                               已处理
+                            </a>
+                        </div>
+                    </div>
+                     <div {% if btn_style == 3 %}class="complain_header_deal"{% else %} class="complain_header"{% endif %}>
+                        <ul>
+                            {% if btn_style == 3 %}
+                                <li style="padding-left: 39px">业主信息</li>
+                             {% else %}
+                                <li style="padding-left: 39px">业主信息</li>
+                            {% endif %}
+
+                            <li>投诉类型</li>
+                            <li>投诉内容</li>
+                            <li>协调人员</li>
+                            <li>照片</li>
+                            {% if btn_style == 3 %}
+                                <li>满意度</li>
+                            {% endif %}
+                        {% if btn_style == 3 %}
+                            <li style="padding-left: 75px">其他操作</li>
+                        {% else %}
+                             <li style="padding-left: 90px">其他操作</li>
+                        {% endif %}
+                        </ul>
+                    </div>
+                    {% ifequal btn_style 3 %}
+                            {% for one_complain in complains %}
+                                <div id="container_complain_{{ one_complain.id  }}">
+                                    <div style="margin-top: 10px;background-color:#f3f3f3;height: 32px;padding-top:6px;">
+                                        <input type="checkbox" name="chk"style="margin-left: 5px;margin-top: -3px"id="{{ one_complain.id }}" class="chk_{{ one_complain.id }}">
+                                        <span >投诉时间：{{ one_complain.timestamp| date:"Y-m-d H:i:s" }}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+                                        <span >完成时间：{{ one_complain.complete_time| date:"Y-m-d H:i:s" }}</span>
+                                    </div>
+                                    <div style="border: 0px solid #eeeeee;height: 63px" class="complain_right_container"id="complain_container_{{one_complain.id  }}">
+                                        <ul>
+                                            <li style="padding-left: 0px;width:148px">
+        {#                                        <span>{{ one_complain.community.title }}</span>小区，#}
+                                                <span>{{ one_complain.author_detail.floor }}</span>幢，
+                                                <span>{{ one_complain.author_detail.gate_card }}</span>房间
+        {#                                        ，户主：<span>{{ one_complain.author_detail.profile.username}}</span>#}
+                                            </li>
+                                            <li style="width:92px;margin-left: 18px ">{{ one_complain.type }}</li>
+                                            <li style="width:215px;margin-left: 0px ">{{ one_complain.content|truncatechars:40  }}</li>
+                                            <li  style="width:77px;margin-left: 0px"class="border_style">
+                                                {% ifequal one_complain.status 2 %}
+                                                    <span style="color: deepskyblue">{{one_complain.handler.username  }}</span>
+                                                {% endifequal %}
+                                                {% ifequal one_complain.status 3 %}
+                                                    <span style="color: green">{{one_complain.handler.username  }}</span>
+                                                {% endifequal %}
+
+                                            </li>
+                                            <li style="width:129px;margin-left: 30px"class="border_style">
+                                                {% if one_complain.src  %}
+                                                        <img src="/media/{{ one_complain.src }}"style="height: 50px;width: 50px">
+                                                {% else %}
+                                                        <span  style="height: 25px;width: 25px">无图片</span>
+                                                {% endif %}
+                                            </li>
+                                            <li style="width:92px;margin-left: 11px"class="border_style">
+                                                {% ifequal one_complain.pleased  1 %}
+                                                    <span>满意</span>
+                                                {% endifequal %}
+                                                {% ifequal one_complain.pleased  2 %}
+                                                    <span>一般</span>
+                                                {% endifequal %}
+                                                {% ifequal one_complain.pleased  3 %}
+                                                    <span>差</span>
+                                                {% else %}
+                                                    <span>暂无</span>
+                                                {% endifequal %}
+
+                                            </li>
+                                            <li style="width:120px;margin-left: 11px;"class="border_style">
+                                                <a href="/show/image_detail/{{ one_complain.id }}/?type=complain"target="_blank">
+                                                 查看详情
+                                                </a>
+
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {% for one_complain in complains %}
+                                <div id="container_complain_{{ one_complain.id  }}">
+                                    <div style="margin-top: 10px;background-color:#f3f3f3;height: 32px;padding-top:6px;">
+                                        <input type="checkbox" name="chk"style="margin-left: 5px;margin-top: -3px"id="{{ one_complain.id }}" class="chk_{{ one_complain.id }}">
+                                        <span >投诉时间：{{ one_complain.timestamp| date:"Y-m-d H:i:s" }}</span>
+                                    </div>
+                                    <div style="border: 0px solid #eeeeee;height: 63px" class="complain_right_container"id="complain_container_{{one_complain.id  }}">
+                                        <ul>
+                                            <li style="padding-left: 0px;width:148px">
+        {#                                        <span>{{ one_complain.community.title }}</span>小区，#}
+                                                <span>{{ one_complain.author_detail.floor }}</span>幢，
+                                                <span>{{ one_complain.author_detail.gate_card }}</span>房间
+        {#                                        ，户主：<span>{{ one_complain.author_detail.profile.username}}</span>#}
+                                            </li>
+                                            <li style="width:92px;margin-left: 40px ">{{ one_complain.type }}</li>
+                                            <li style="width:230px;margin-left: 16px ">{{ one_complain.content|truncatechars:40  }}</li>
+                                            <li  style="width:110px;margin-left: 13px"class="border_style">
+                                                {% ifequal one_complain.status 2 %}
+                                                    <span style="color: deepskyblue">{{one_complain.handler.username  }}</span>
+                                                {% endifequal %}
+                                                {% ifequal one_complain.status 3 %}
+                                                    <span style="color: green">{{one_complain.handler.username  }}</span>
+                                                {% endifequal %}
+
+                                            </li>
+                                            <li style="width:129px;margin-left: 30px"class="border_style">
+                                                {% if one_complain.src  %}
+                                                        <img src="/media/{{ one_complain.src }}"style="height: 50px;width: 50px">
+                                                {% else %}
+                                                        <span  style="height: 25px;width: 25px">无图片</span>
+                                                {% endif %}
+                                            </li>
+                                            <li style="width:130px;margin-left: 1px"class="border_style">
+                                                <a href="/show/image_detail/{{ one_complain.id }}/?type=complain"target="_blank">
+                                                 查看详情
+                                                </a>
+                                                 {% ifequal one_complain.status 4 %}
+                                                   <button class='btn'
+                                                      name={{ one_complain.id  }}
+                                                      onclick="worker_deal_complain_single(this)"
+                                                      id="complete_complain_single_{{ one_repair.id  }}"
+                                                      style=" background: url('/static/images/deal_complain.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                                                      width: 67px;height: 26px;
+                                                      margin-left: 22px;
+                                                      margin-top: 5px">
+                                                    </button>
+                                                {% endifequal %}
+                                                {% ifequal one_complain.status 2 %}
+                                                   <button class='btn'
+                                                      name={{ one_complain.id  }}
+                                                      onclick="complete_complain_single(this)"
+                                                      id="complete_complain_single_{{ one_complain.id  }}"
+                                                      style=" background: url('/static/images/complete_complain.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                                                      width: 67px;height: 26px;
+                                                      margin-left: 22px;
+                                                      margin-top: 5px">
+                                                    </button>
+                                                {% endifequal %}
+
+                                            </li>
+
+                                        </ul>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endifequal %}
+
+                         <div class="paginator" style="background-color:#dcdcdc;height: 40px;margin-top: 10px;padding-top: 8px;text-align: right">
+                            <div>
+                                <span class="step-links">
+                                    {% if complains.has_previous %}
+                                        <a href="?page={{ complains.previous_page_number }}&deal_status={{ btn_style }}">《上一页》</a> &nbsp;
+                                    {% endif %}
+                                    <span class="current">
+                                         当前页： {{ complains.number }}/{{ complains.paginator.num_pages }}.
+                                    </span> &nbsp;
+                                    {% if complains.has_next %}
+                                        <a href="?page={{ complains.next_page_number }}&deal_status={{ btn_style }}">《下一页》</a>
+                                    {% endif %}
+                                    <span>跳转到:<input type="text"style="width: 30px" id="input_page"></span>
+                                     <button id="decide_skip_page"class="btn"name="{{ btn_style }}"
+                                    style="float:right;margin-left:5px;margin-right: 5px;margin-top: -1px;width: 42px;height: 25px;
+                                    background: url('/static/images/sure.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0);">
+                                    </button>
+                                </span>
+                            </div>
+                   </div>
+                    <div class="el_blank_h10 fn_clear"></div>
+            </div>
+
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        function check_all(obj){
+            var check_box = document.getElementsByName('chk');
+            for(var i=0;i<check_box.length;i++)
+                {check_box[i].checked = obj.checked;}
+        }
+        function complete_complain_single(obj){
+            var id = $(obj).attr('name');
+            var checked_array = new Array();
+            if($(".chk_"+id+"").attr("checked")){
+                 checked_array.push(id);
+                 $.post('/complete/complain/',
+                            {
+                                'selected_complain_string': checked_array.toString()
+                            },
+                            function (data) {
+                                if (data.success) {
+                                    alert(data.info);
+                                    $(".chk_"+id+"").remove();
+                                    $(obj).remove();
+                                }
+                            }
+                    )
+
+            }
+              else {
+                    alert("请选择处理数据");
+                }
+
+        }
+
+         function worker_deal_complain_single(obj){
+            var id = $(obj).attr('name');
+            var checked_array = new Array();
+            if($(".chk_"+id+"").attr("checked")){
+                 checked_array.push(id);
+                 $.post('/worker_deal/complain/',
+                            {
+                                'selected_complain_string': checked_array.toString()
+                            },
+                            function (data) {
+                                if (data.success) {
+                                    alert(data.info);
+                                    $(".chk_"+id+"").remove();
+                                    $(obj).remove();
+                                }
+                            }
+                    )
+
+            }
+              else {
+                    alert("请选择处理数据");
+                }
+        }
+
+        $(function () {
+            $('#decide_skip_page').click(function(){
+                var page_num = $('#input_page').val();
+                var deal_status = $(this).attr('name');
+                window.location.href = "/complain/?page=" + page_num+"&deal_status="+deal_status+"";
+
+                })
+            });
+
+
+    </script>
+    <script src="/static/js/jquery.dataTables.min.js"></script>
+    <script src="/static/js/DT_bootstrap.js"></script>
+{% endblock %}

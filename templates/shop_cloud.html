@@ -1,0 +1,200 @@
+{% extends "shop_basic.html" %}
+
+{% block css %}
+ <style>
+.title{font-size: 8px;}
+.cpu-list{height: 50px; padding-top: 20px}
+.memory-list{height: 50px;margin-top: 10px}
+.pan-list{height: 50px;margin-top: 10px}
+.list{font-size: 20px; padding:10px 0 0 10px;display: block;  }
+.service ul{position: absolute; margin:-25px 0 0 80px}
+.cpu-select,.memory-select,.pan-select{font-size:15px;background:#f3f3f3;width:60px; height:26px;border: 1px solid #d3d3d3; margin-right: 60px; text-align: center; border-radius: 4px;cursor: pointer;padding: 2px}
+.cpu-select:hover,.memory-select:hover,.pan-select:hover{border: 1px solid#0098F4;background: #fff}
+.clicked{background: #fff;border: 1px solid#0098f4}
+.body-title{padding-top:3px}
+.abstract-service{margin: -21px 0 0 20px;}
+ .abstract-service-name{width: 45px;text-align: right}
+ #reset{margin-left: 10px}
+ </style>
+{% endblock %}
+
+{% block title %}云计算服务{% endblock %}
+{% block cloud %}current{% endblock %}
+{% block contain %}
+<div class="contain">
+
+    <div class="contain-left">
+        <div class="service">
+               <div class="service-title">
+                   选择云计算服务    <span class="title">CPU、内存、云盘及宽带租赁、按需购买</span>
+               </div>
+
+         <div class="service-list">
+               <div class="cpu-list">
+                <span class="list">CPU</span>
+                <ul>
+                   <li class="cpu-select">
+                         <input type="radio" class="service-radio">
+                         <span><div class="body-title">1核</div></span>
+                   </li>
+
+                   <li class="cpu-select">
+                        <input type="radio" class="service-radio">
+                        <span><div class="body-title">2核</div></span>
+                   </li>
+
+                   <li class="cpu-select">
+                        <input type="radio" class="service-radio">
+                        <span><div class="body-title">4核</div></span>
+                   </li>
+
+                   <li class="cpu-select">
+                        <input type="radio" class="service-radio">
+                        <span><div class="body-title"> 8核</div></span>
+                   </li>
+                </ul>
+               </div>
+
+               <div class="memory-list">
+                <span class="list">内存</span>
+                <ul>
+                   <li class="memory-select" value="512">
+                      <input type="radio" class="service-radio">
+                      <span><div class="body-title">512M</div></span>
+                   </li>
+
+                   <li class="memory-select" value="1g">
+                      <input type="radio" class="service-radio">
+                      <span><div class="body-title">1G</div></span>
+                   </li>
+
+                   <li class="memory-select" value="1.5g">
+                        <input type="radio" class="service-radio" value="1.5G">
+                        <span><div class="body-title">1.5G</div> </span>
+                   </li>
+
+                   <li class="memory-select" value="2g">
+                        <input type="radio" class="service-radio">
+                        <span><div class="body-title">2G</div> </span>
+                   </li>
+
+                    <li class="memory-select" value="4g">
+                        <input type="radio" class="service-radio">
+                        <span><div class="body-title">4G</div> </span>
+                   </li>
+                </ul>
+               </div>
+
+                <div class="pan-list">
+                <span class="list">云盘</span>
+                <ul>
+                   <li class="pan-select">
+                       <input type="radio" class="service-radio">
+                       <span><div class="body-title">500G</div> </span>
+                   </li>
+
+                   <li class="pan-select">
+                       <input type="radio" class="service-radio">
+                       <span><div class="body-title">1T</div> </span>
+                   </li>
+
+                   <li class="pan-select">
+                       <input type="radio" class="service-radio">
+                       <span><div class="body-title">2T</div> </span>
+                   </li>
+
+                   <li class="pan-select">
+                       <input type="radio" class="service-radio">
+                        <span><div class="body-title">5T</div> </span>
+                   </li>
+
+                    <li class="pan-select">
+                        <input type="radio" class="service-radio">
+                        <span><div class="body-title">10T</div> </span>
+                   </li>
+                </ul>
+               </div>
+
+          </div>
+        </div>
+
+        <div class="detail">
+             <div class="service-title">
+                 详细信息
+                 <button class="detail-switch">
+                     <span id="open-detail">打开</span>
+                     <span id="close-detail" style="display: none">关闭</span>
+                 </button>
+             </div>
+
+             <div class="service-detail">
+                  <span>选择云计算服务，按需购买</span>
+             </div>
+        </div>
+
+    </div>
+
+    <div class="contain-right">
+        <div class="abstract-title">
+            摘要
+        </div>
+        <div class="abstract-contain">
+             <div><img src="/static/images/android.png"></div>
+             <ul id="abstract-box" style="display: none ">
+                 <li>
+                    <span class="abstract-service-name"> &nbsp;CPU: </span>  <span class="abstract-service" id="cpu-abstract"></span>
+                 </li>
+                 <li>
+                     <span class="abstract-service-name">内存:</span> <span class="abstract-service" id="memory-abstract"></span>
+                 </li>
+                 <li>
+                     <span class="abstract-service-name">云盘:</span> <span class="abstract-service" id="pan-abstract"></span>
+                 </li>
+                 <li>
+                    <span class="abstract-service-name"> 小计: </span><span class="abstract-service" id="total"></span>
+                 </li>
+
+                 <button id="add-to-car">选择</button>
+                 <button id="reset">全部重选</button>
+             </ul>
+        </div>
+    </div>
+
+</div>
+<script>
+$(document).ready(function(){
+ $(".cpu-select").click(function(){
+ $(".cpu-select").removeClass("clicked");
+ $(this).addClass("clicked");
+   $("#abstract-box").slideDown();
+ document.getElementById("cpu-abstract").innerText=this.innerText;
+
+
+  })
+
+$(".memory-select").click(function(){
+    $(".memory-select").removeClass("clicked");
+    $(this).addClass("clicked");
+     document.getElementById("memory-abstract").innerText=this.innerText;
+     $("#abstract-box").slideDown();
+})
+
+$(".pan-select").click(function(){
+    $(".pan-select").removeClass("clicked");
+    $(this).addClass("clicked");
+    $("#abstract-box").slideDown();
+    document.getElementById("pan-abstract").innerText=this.innerText
+})
+
+$("#reset").click(function(){
+   $(".service-list").find("li").removeClass("clicked");
+     $("#abstract-box").slideUp();
+    document.getElementById("cpu-abstract").innerText="";
+    document.getElementById("memory-abstract").innerText="";
+    document.getElementById("pan-abstract").innerText="";
+
+})
+
+});
+</script>
+{% endblock %}

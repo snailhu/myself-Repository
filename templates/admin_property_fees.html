@@ -1,0 +1,221 @@
+{% extends "basecloud.html" %}
+{% block title %}物业缴费{% endblock %}
+{% block css %}
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .repair1, span, button {
+            font-size: 15px;
+
+        }
+
+        tr:first-child {
+            background-color: #f3f3f3;;
+        }
+
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+{#            border: 1px solid red;#}
+            width: 1171px !important;
+        }
+        .repair_header{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+        .repair_header li{
+            padding-left: 116px;
+            float: left;
+        }
+
+        .vessel .vessel_titBox {
+            background: url("") repeat-x scroll 0 -226px rgba(0, 0, 0, 0);
+            border-bottom: 1px solid #00a1e9;
+            height: 40px;
+            line-height: 40px;!important
+    }
+        .vessel{
+            border: 0px ;
+        }
+
+        .repair_right_container{
+
+        }
+        .repair_right_container li{
+            float:left;
+            text-align: center;
+            padding-top: 8px;
+            height: 80px;
+{#            border: 1px solid red;#}
+        }
+      .border_style{
+{#          border-left:2px solid #eeeeee#}
+      }
+    .park_header ul li{
+        width:100px;
+        height: 30px;
+        border: 1px solid red;
+    }
+     thead td{
+        border: 1px solid #ffffff;
+        height: 48px;
+        width: 212px;
+        text-align: center;
+         background-color: #bad804;
+
+    }
+    tbody td{
+        border: 1px solid darkgrey;
+        height: 48px;
+        width: 212px;
+        text-align: center;
+         background-color: #ffffff;
+
+    }
+    </style>
+
+{% endblock %}
+{% block right_container %}
+    <div style="height:500px;width: 850px;overflow: auto;border-top: 0px;margin-left: 5px;float: left;background-color: #ffffff">
+                <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a href="/house/pay_fees/?btn_style=1"
+                                class="btn_type btn {% if btn_style == 1 %}btn-primary{% endif %} "
+                                style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 95px">
+                               物业费详情
+                             </a>
+                             <a href="/property_fee_manage/?btn_style=2"
+                               class="btn_type btn {% if btn_style == 2 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 95px">
+                                 物业费管理
+                            </a>
+                        </div>
+                </div>
+                <div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <td>用户</td>
+                                <td>已缴物业费</td>
+                                <td>未缴物业费</td>
+                                <td>状态</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if all_user_info %}
+                               {% for user_info in all_user_info %}
+                                    <tr>
+                                    <td>{{ user_info.floor }}栋{{ user_info.gate_card }}号&nbsp;&nbsp;户主：{{user_info.personal_profile.username  }}</td>
+                                    <td>
+                                        {% if user_info.pay_status %}
+                                            <img src="/static/images/have_pay.png/"/>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if not user_info.pay_status %}
+                                            <img src="/static/images/not_pay.png/"/>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align:center "id="td_{{user_info.personal_profile.id }}">
+                                        {% if user_info.pay_status %}
+                                            <button name="{{user_info.personal_profile.id }}"class="btn" disabled
+                                            style="width: 42px;height: 25px;
+                                            background: url('/static/images/have_pay_btn.png') no-repeat;">
+                                            </button>
+                                        {% else %}
+                                            {% if send_message_status %}
+                                                <span style='color:#ff8f3d'>已催</span>
+                                                {% if user_info.not_pay_num %}
+                                                    <span>{{user_info.not_pay_num }}年未交</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <button name="{{user_info.personal_profile.id }}"class="btn"
+                                                onclick="urge_paying(this)"
+                                                style="width: 42px;height: 25px;
+                                                background: url('/static/images/urge.png') no-repeat;">
+                                                </button>
+                                                {% if user_info.not_pay_num %}
+                                                    <span>{{ user_info.not_pay_num }}年未交</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+
+                                    </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                             <tr>
+                                <td colspan="4">暂无用户缴费信息</td>
+                             </tr>
+                            {% endif %}
+                        </tbody>
+
+                    </table>
+                </div>
+                  <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                  </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+        function urge_paying(obj){
+            var change_id=$(obj).attr('name');
+            $.post('/urge_paying/',
+                    {
+                        'user_id':change_id
+                    },
+                function(data){
+                    if(data.succsee){
+                        alert(data.info);
+                        $("#td_"+change_id+"").html("<span style='color:#ff8f3d'>已催</span>")
+                    }
+                    else{
+                         alert(data.info);
+                    }
+                }
+            )
+
+        }
+    </script>
+{% endblock %}

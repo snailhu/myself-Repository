@@ -1,0 +1,407 @@
+{% extends "basecloud.html" %}
+{% block title %}家政项目管理{% endblock %}
+{% block css %}
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .repair1, span, button {
+            font-size: 15px;
+
+        }
+       .modal-body ul li{
+           float: left;
+           padding-left: 43px;
+           padding-top: 20px;
+
+       }
+        .rate-standard{
+            margin-left: 144px;
+        }
+        .rate-standard span {
+            padding-left: 25px;
+        }
+        .pleased{
+            margin-left: 35px;
+            width:100px;
+            padding-left: 25px;
+             margin-top: -18px;
+            float:left;
+        }
+        .sr-shop-rating{
+            float:left;
+            margin-top: -20px;
+        }
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+            width: 1126px !important;
+{#            border: 1px solid red;#}
+        }
+        .uploadify-button {
+            background-color: #505050;
+            background-image: -moz-linear-gradient(center bottom , #505050 0%, #707070 100%);
+            background-position: center top;
+            background-repeat: no-repeat;
+            border: 2px solid #808080;
+            border-radius: 0px 0px 0px 0px;
+            color: #FFFFFF;
+            font: bold 12px Arial,Helvetica,sans-serif;
+            text-align: center;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+            width: 100%;
+            }
+        #no_record .uploadify-button {
+            background-color: #505050;
+            background-image: -moz-linear-gradient(center bottom , #505050 0%, #707070 100%);
+            background-position: center top;
+            background-repeat: no-repeat;
+            border: 2px solid #808080;
+            border-radius: 0px 0px 0px 0px;
+            color: #FFFFFF;
+            font: bold 12px Arial,Helvetica,sans-serif;
+            text-align: center;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+            width: 100%;
+            margin-left: 400px
+            }
+        #no_record .swfupload{
+            margin-left: 400px
+        }
+           .uploadify-queue-item .cancel a {
+            background: url("/static/images/uploadify-cancel.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+            float: right;
+            height: 16px;
+            text-indent: -9999px;
+            width: 16px;
+        }
+    </style>
+
+{% endblock %}
+{% block right_container %}
+        <!-- 主要内容区域 start -->
+            <!-- 中部 start -->
+            <div style="width: 906px;overflow: auto;float:left">
+                <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                    <div class="vessel_titBox"><span class="tit">家政服务管理</span></div>
+                </div>
+                {% if is_show %}
+                    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable"
+                           id="repair_item_table" aria-describedby="example_info">
+                        <thead>
+                        <tr role="row">
+                            <th>项目</th>
+                            <th>内容</th>
+                            <th>费用描述</th>
+                            <th>备注</th>
+                            <th>修改</th>
+                            <th> <input type="checkbox" onclick="check_all(this)"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for item in items %}
+
+                            <tr class="except_one">
+                                <td id="item_{{item.id }}">{{ item.item }}</td>
+                                <td id="content_{{item.id }}">{{ item.content }}</td>
+                                <td id="description_{{item.id }}">{{ item.price_description}}</td>
+                                <td id="remarks_{{item.id }}">{{ item.remarks}}</td>
+                                <td>
+                                    <button class="btn btn-primary" data-toggle="modal"style="border-radius: 0px 0px 0px 0px;" onclick="modify(this,{{ item.id }})">
+                                        修改
+                                    </button>
+                                </td>
+                                <td><input type="checkbox" name="chk" id={{ item.id }}></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <div style="margin-top:-24px;margin-left:386px;width: 180px;">
+
+                         <div >
+{#                            <input type="checkbox" onclick="check_all(this)">#}
+{#                            <span>全选</span>#}
+                            <button class='btn'
+                                                  onclick="delete_housekeeping_item()"
+                                                  style=" background: url('/static/images/delete.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                                                  width: 53px;height: 28px;">
+                            </button>
+                            <button class='btn'data-toggle="modal"
+                                                 onclick="add_item()"
+                                                  style=" background: url('/static/images/add_item.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                                                  width: 53px;height: 28px;">
+                             </button>
+                            <a href="/static/housekeeping_excel.xls"> 导出Excel </a>
+                        </div>
+                        <input type="file" name="file_upload" id="file_upload" />
+
+                 </div>
+                {% else %}
+                    <div class="umDataLstBox">
+                            <div class="umDataBox_s1 umDataBox">
+                                    <div class="umDataBox_receiptBox">
+                                        <p class="title">暂无相关记录</p>
+                                    </div>
+                                    <div style="text-align: center">
+                                         <button class='btn'data-toggle="modal"
+                                                 onclick="add_item()"
+                                                  style=" background: url('/static/images/add_item.png') no-repeat;
+                                                  width: 53px;height: 28px;">
+                                     </button>
+                                     <a href="/static/家政服务报价样式表.xls"> 导出Excel样式 </a>
+                                    </div>
+
+                                    <div id="no_record"><input type="file" name="file_upload" id="file_upload" /></div>
+
+                            </div>
+                            <!-- 分页 start -->
+                            <div class="pagesBox"></div>
+                    </div>
+                    <!-- 分页 end -->
+                {% endif %}
+                         <div class="modal fade" id="add_housekeeping_item" tabindex="-1"
+                             role="dialog" aria-labelledby="myModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content" >
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="refresh()">&times;</button>
+                                        <h4 class="modal-title" id="myModalLabel">
+                                            项目记录管理</h4>
+                                    </div>
+                                    <div class="modal-body">
+
+                                        <div style="margin-top:10px "><span>项目</span>：<input type="text" name="input_item" id="item_input" ></div>
+                                        <div style="margin-top:10px "><span>费用</span>：<input type="text" name="input_price" id="price_input"></div>
+                                        <div style="margin-top: 10px">
+                                            <span class="txt txt_1">内容：</span>
+                                            <textarea name="content"  style=" margin:10px 0 10px 0;width: 500px;"id="content_area"></textarea>
+                                        </div>
+                                         <div>
+                                            <span class="txt txt_1">备注：</span>
+                                            <textarea name="remarks"  style=" margin:10px 0 20px 0;width: 500px;"></textarea>
+
+                                        </div>
+                                        <div style="margin-top:10px " >
+                                            <button class="btn btn-primary modify"style="border-radius: 0px 0px 0px 0px;height:30px;float: right" onclick="modify_housekeeping_item(this)">
+                                                <span>修改</span>
+                                            </button>
+                                            <button class="btn btn-primary add_item"style="border-radius: 0px 0px 0px 0px;height:30px;float: right" onclick="add_housekeeping_item()">
+                                                <span>增加</span>
+                                            </button>
+
+                                        </div>
+                                        <div id="add_result" class="alert alert-warning" style="margin-top:50px ;display: none">
+
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+            </div>
+            <!-- 中部 end -->
+            <!-- 右侧 start -->
+            <div class="el_w_237 fn_right" style="width:172px">
+            </div>
+            <!-- 右侧 end -->
+            <div class="el_blank_h10 fn_clear"></div>
+
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        $(function() {
+
+            $("#file_upload").uploadify({
+               'buttonText' : '导入Excel',
+                height        : 30,
+                'fileTypeDesc' : 'Excel file',
+                'fileTypeExts': '*.xls;*.xlsx',
+                swf           : '/static/uploadify.swf',
+                uploader      : '/import/housekeeping_item/excel/',
+                width         : 110,
+               'uploadLimit' : 1,
+               'onUploadSuccess' : function(file, data, response) {
+                   alert('文件' + file.name + '导入成功 ');
+                  window.location.href = "/manage/housekeeping/item/";
+                },
+                'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+            alert('文件 ' + file.name + ' 内部格式不正确: ' + errorString);
+        }
+            });
+        });
+
+    function check_all(obj) {
+        var check_box = document.getElementsByName('chk');
+        for (var i = 0; i < check_box.length; i++) {
+            check_box[i].checked = obj.checked;
+        }
+    }
+        function add_housekeeping_item()
+            {
+                var housekeeping_item_name=$('input[name="input_item"]').val();
+                var housekeeping_price_description=$('input[name="input_price"]').val();
+                var housekeeping_content=$('textarea[name="content"]').val();
+                var housekeeping_remarks=$('textarea[name="remarks"]').val();
+               if(housekeeping_price_description && housekeeping_item_name && housekeeping_content && housekeeping_remarks ){
+                    $.post('/add/housekeeping_item/',
+                            {
+                                'housekeeping_price_description': housekeeping_price_description,
+                                'housekeeping_item_name': housekeeping_item_name,
+                                'housekeeping_content': housekeeping_content,
+                                'housekeeping_remarks': housekeeping_remarks
+                            },
+                            function(data){
+                                 if(data.success){
+                                  $("#add_result").html("<span>添加成功</span>");
+                                   $("#add_result").show();
+                                }else{
+                                   $("#add_result").html("<span>添加失败</span><span class='glyphicon glyphicon-minus-sign'></span>");
+                                   $("#add_result").show();
+                                 }
+                            }
+                    )
+
+                }else{
+                    alert("请填入项目信息");
+                }
+
+            }
+
+        function delete_housekeeping_item(){
+                var checked_array = new Array();
+                $('input[type="checkbox"][name="chk"]:checked').each(
+                        function () {
+                            var id = $(this).attr('id');
+                            checked_array.push(id);
+                        }
+                );
+                if (checked_array.length > 0) {
+                    $.post('/delete/housekeeping_item/',
+                            {
+                                'selected_item_string': checked_array.toString()
+                            },
+                            function (data) {
+                                  if(data.success){
+                                        alert(data.info);
+                                        window.location.href = "/manage/housekeeping/item/";
+                                  }
+                            }
+                    )
+                } else {
+                    alert("请选择处理数据");
+                }
+        }
+        function refresh(){
+             window.location.reload();
+        }
+        function add_item(){
+            $('.add_item').show();
+            $('.modify').hide();
+             $('#add_housekeeping_item').modal('show');
+        }
+
+        function modify(obj,id){
+            $('.add_item').hide();
+            $('.modify').show();
+            $('.modify').attr('name',id);
+            $('input[name="input_item"]').attr('placeholder',$('#item_'+id+'').html());
+            $('input[name="input_price"]').attr('placeholder',$('#description_'+id+'').html());
+            $('textarea[name="content"]').attr('placeholder', $('#content_'+id+'').html());
+            $('textarea[name="remarks"]').attr('placeholder',$('#remarks_'+id+'').html());
+            $('#add_housekeeping_item').modal('show');
+        }
+
+        function modify_housekeeping_item(obj){
+
+            var modify_item_id= $('.modify').attr('name');
+            var housekeeping_item_name=$('input[name="input_item"]').val();
+            var housekeeping_price_description=$('input[name="input_price"]').val();
+            var housekeeping_content=$('textarea[name="content"]').val();
+            var housekeeping_remarks=$('textarea[name="remarks"]').val();
+               if(housekeeping_price_description || housekeeping_item_name || housekeeping_content || housekeeping_remarks ){
+                    $.post('/modify/housekeeping_item/',
+                            {
+                                'modify_item_id':modify_item_id,
+                                'modify_price_description': housekeeping_price_description,
+                                'modify_item_name': housekeeping_item_name,
+                                'modify_content': housekeeping_content,
+                                'modify_remarks': housekeeping_remarks
+                            },
+                            function(data){
+                                 if(data.success){
+                                  $("#add_result").html("<span>修改成功</span>");
+                                   $("#add_result").show();
+                                }else{
+                                   $("#add_result").html("<span>没有修改数据</span><span class='glyphicon glyphicon-minus-sign'></span>");
+                                   $("#add_result").show();
+                                 }
+                            }
+                    )
+
+                }else{
+                    alert("请填入修改信息");
+                }
+
+
+        }
+
+        $(document).ready(function () {
+          $('#add_housekeeping_item').on('hidden.bs.modal', function (e) {
+                window.location.reload();
+            })
+            $('#repair_item_table').dataTable({
+                "oLanguage": {
+                    "sLengthMenu": "显示 _MENU_每页显示记录",
+                    "sZeroRecords": "对不起没有你要找的记录",
+                    "sInfo": "显示 _START_ 到 _END_ 总共 _TOTAL_ 条记录",
+                    "sInfoEmpty": "显示 0 到 0 总共 0 记录",
+                    "sInfoFiltered": "(从 _MAX_条记录中查找)",
+                    "sSearch": "搜索:"
+                }
+            });
+        });
+
+    </script>
+    <script src="/static/js/jquery.dataTables.min.js"></script>
+    <script src="/static/js/DT_bootstrap.js"></script>
+{% endblock %}

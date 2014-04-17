@@ -1,0 +1,46 @@
+{% extends "shop_basic.html" %}
+
+{% block title%}集团分机服务{% endblock %}
+
+{% block group %}current{% endblock %}
+
+{% block contain %}
+<div class="contain">
+<div class="contain-left">
+<div class="service">
+<div class="service-title">
+ 选择IP phone服务
+</div>
+<div class="service-list">
+
+</div>
+ </div>
+<div class="detail">
+             <div class="service-title">
+                 详细信息
+                 <button class="detail-switch">
+                     <span id="open-detail">打开</span>
+                     <span id="close-detail" style="display: none">关闭</span>
+                 </button>
+             </div>
+
+        </div>
+</div>
+  <div class="contain-right">
+         <div class="abstract-title">
+            摘要
+        </div>
+        <div class="abstract-contain">
+            <img src="/static/images/android.png">
+            <ul id="abstract-box" style="display: none">
+                <li>
+                    <span class="abstract-service-name" id="type" ></span>
+                </li>
+                <li>
+                    <button id="add-to-car">选择</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

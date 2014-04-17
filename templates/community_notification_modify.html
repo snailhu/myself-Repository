@@ -1,0 +1,58 @@
+{% extends "basecloud.html" %}
+{% block title %}修改通知{% endblock %}
+{% block css %}
+    <link href="/static/js/ueditor/themes/default/css/ueditor.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="/static/js/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/js/ueditor/ueditor.all.min.js"> </script>
+{% endblock %}
+
+{% block right_container%}
+ <div style="margin-left: 220px;border: 1px solid#e3e3e3;background-color: #fff;width: 800px">
+ <span style="display: block;padding: 10px 30px;font-size: 25px">修改通知</span>
+ <div style="padding: 10px 30px ">
+ <span>标题：</span>
+<input name="input_title" type="text" style="width: 200px" value="{{notification.notification_theme }}" disabled="true">
+ </div>
+ <div style="padding: 20px 0 10px 50px">
+<script id="editor" type="text/plain" style="width:650px;height:300px;"></script>
+ </div>
+ <div style="padding: 10px;margin-left: 600px">
+<button type="button" class="btn btn-primary" onclick="save_modify(this)">保存修改</button>
+ </div>
+ </div>
+{% endblock %}
+
+{% block script %}
+ <script>
+ var ue=UE.getEditor("editor")
+ue.ready(function(){
+     {% autoescape off %}
+    ue.setContent("{{ notification.notification_content }}");
+     {% endautoescape %}
+})
+
+ function save_modify(obj){
+        var modify_id={{notification.id}}
+        var modify_title = $('input[name=input_title]').val();
+        var modify_content = ue.getContent();
+        if (modify_title&&modify_content){
+                $.post('/modify/notification/',
+                    {
+                        'modify_id':modify_id,
+                        'modify_title':modify_title,
+                        'modify_content':modify_content
+                    },
+                    function(data){
+                        if(data.success){
+                            alert(data.info);
+                           window.location.href="/community/notification/";
+                        }
+
+                    }
+            )
+        }else{
+            alert("请填入修改内容");
+        }
+ }
+ </script>
+{% endblock %}

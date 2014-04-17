@@ -1,0 +1,147 @@
+{% extends "baseheader.html" %}
+{% block title %}我的报修{% endblock %}
+{% block css %}
+     <style>
+            <!--
+            .qq-upload-button {
+                left: 0;
+                top: 0;
+                color: #9C9B9B;
+                text-align: center;
+                line-height: 100px;
+                font-weight: bold;
+                position: absolute;
+                cursor: pointer;
+            }
+            -->
+     .type{
+         float: left;
+         margin-left: 10px;
+
+     }
+        </style>
+{% endblock %}
+ {% block container %}
+        <!-- 主要内容区域 start -->
+        <div class="s_ifs_ix main el_container">
+            <div class="el_blank_h20"></div>
+            <!-- 右侧栏 start -->
+            <div class="el_w_974 fn_right">
+                <!-- vessel start -->
+                <div class="vessel vessel_s1">
+                    <div class="vessel_titBox"><span class="tit">报修</span></div>
+                    <div class="vessel_conBox">
+                        <!--缴费步骤 start-->
+                        <form enctype="multipart/form-data" id="pepair-form"  action="/repair/create/" method="post">
+                            <div class="um_mn_box">
+                                <table class="table" cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td width="80" height="25"><label class="baoxiu radio"></label></td>
+                                        <td width="580"><label class="tousu radio"></label></td>
+                                        <td rowspan="2" align="left"><!--电话 start-->
+                                            <div style="margin-top:5px;background:url('/static/images/phone2.png') no-repeat ;position:inherit;width: 260px;height: 68px;border:1px solid #86c632">
+
+                                                <div style="margin-left:70px;margin-top: 8px">
+                                                    <span style="color:#86c632"><font size="3px"><strong>客服电话:0000-123-456</strong></font></span>
+                                                </div>
+                                                <div style="margin-left:70px;margin-top: 8px">
+                                                    <span style="color:#86c632"><font sixe="3px"><strong>节假日不休24小时为您服务</strong></font></span>
+                                                </div>
+
+                                            </div>
+{#                                             <span class="phoneNumBox phone_right" >#}
+{#                                                 <span class="phoneNumBox_box">#}
+{#                                                   <div class="phoneNumBox_box_tousu">#}
+{#                                                        <span>客服电话</span><br/>#}
+{#                                                        <span>7x24小时</span>#}
+{#                                                   </div>#}
+{#                                                    <span class="txt">4008-893-893</span>#}
+{#                                                 </span><!--电话 end-->#}
+{#                                             </span>#}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="baoxiu" colspan="2" >
+                                            <div id="select_repair_type" style="float: left">
+                                                <span>报修类别</span>：
+                                                <select style="width:130px;" name="category"id="select_type" onchange="select_type_repair()">
+                                                    <option value="个人报修"  >个人报修</option>
+                                                    <option value="公共报修">公共报修</option>
+                                                </select>
+                                            </div>
+                                            <div id="select_person_type"  class="type">
+                                                <span>报修项目</span>：
+                                                <select style="width:180px;" name="category_person" id="select_person">
+                                                    {% for item in item_person_list %}
+                                                        <option id="{{ item.item_id }}" value="{{ item.item_id }}">{{ item.item_name }}：{{ item.item_price }}元</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div id="select_public_type" class="type" style="display:none;" >
+                                                <span>报修项目</span>：
+                                                <select style="width:130px;" name="category_public" id="select_public">
+                                                   {% for item in item_public_list %}
+                                                        <option id="{{ item.item_id }}" value="{{ item.item_id }}">{{ item.item_name }}：{{ item.item_price }}元</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3"><span class="txt txt_1">报修描述：</span>
+                                            <textarea name="content" class="el_inText" style=" margin:10px 0 20px 0;"></textarea></td>
+                                    </tr>
+                                </table>
+
+                                <div class="tousu_box" id="reviewContent"style="background: url('/static/images/background.png') no-repeat">
+                                    <img style="display: none; width:120px;height:120px;" alt="" src=""
+                                         class="upload_image img-polaroid ">
+                                </div>
+                                  <span class="file1">
+                                      <div class="qq-upload-button" style="position: relative; overflow: hidden; direction: ltr;"id="show_upload_image">上传图片</div>
+                                       <input type="file" class=" input" style="display:none" id="upload_repair_img" name="upload_repair_img"
+                                         target="#reviewContent"/>
+                                  </span>
+                                  <div class="line"></div>
+                                  <span class="last_text_box1">
+                                      <button class="el_btn_orange_xsl el_btn el_btn1" type="submit" style="background: url('/static/images/submit1.png') no-repeat;width:106px;height: 36px"><span class="txt">提交</span></button>
+                                  </span>
+                           </div>
+                        </form>
+                    </div>
+                </div>
+                <!-- vessel end -->
+            </div>
+            <div class="el_blank_h10 fn_clear"></div>
+            <div class="el_blank_h50 fn_clear"></div>
+        </div>
+    <!-- page -->
+{% endblock %}
+{%block  script %}
+<script src="/static/js/jquery.iframe-transport.js"></script>
+<script src="/static/js/jquery.imgreview.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('.el_btn1').mouseover(function(){
+            $(this).attr("style","background: url('/static/images/submit_hover1.png') no-repeat;width:106px;height:36px");
+        }).mouseout(function(){
+           $(this).attr("style","background: url('/static/images/submit1.png') no-repeat;width:106px;height:36px");
+                })
+        $('#show_upload_image').click(function(){
+            $('#upload_repair_img').trigger('click');
+        })
+    })
+    function select_type_repair(){
+        var objS = document.getElementById("select_type");
+        if (objS.selectedIndex == 0){
+            $("#select_person_type").show();
+            $("#select_public_type").hide();
+        }
+        if(objS.selectedIndex == 1){
+            $("#select_person_type").hide();
+            $("#select_public_type").show();
+        }
+    }
+
+</script>
+{% endblock  %}

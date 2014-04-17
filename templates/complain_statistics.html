@@ -1,0 +1,252 @@
+{% extends "basecloud.html" %}
+{% block title %}工作统计{% endblock %}
+{% block css %}
+    <link href="/static/css/jquery-ui-1.7.2.custom.css" rel="stylesheet">
+    <style>
+         .ui-datepicker {
+              margin-left: -100px;
+            }
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .repair1, span, button {
+            font-size: 15px;
+
+        }
+       .modal-body ul li{
+           float: left;
+           padding-left: 43px;
+           padding-top: 20px;
+
+       }
+        .rate-standard{
+            margin-left: 144px;
+        }
+        .rate-standard span {
+            padding-left: 25px;
+        }
+        .pleased{
+            margin-left: 35px;
+            width:100px;
+            padding-left: 25px;
+             margin-top: -18px;
+            float:left;
+        }
+        .sr-shop-rating{
+            float:left;
+            margin-top: -20px;
+        }
+
+        tr:first-child {
+            background-color: #f3f3f3;
+        }
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+            width: 1019px !important;
+        }
+
+        .table-bordered > thead > tr > th,
+        .table-bordered > tbody > tr > th,
+        .table-bordered > tfoot > tr > th,
+        .table-bordered > thead > tr > td,
+        .table-bordered > tbody > tr > td,
+        .table-bordered > tfoot > tr > td {
+            text-align: center;
+            border-left: 0px;
+            border-right: 0px;!important
+        }
+
+    #example tbody tr {
+        height: 65px;
+    }
+    #example tbody tr td {
+
+         background-color: #ffffff;
+    }
+
+    #example {
+        border-left: 0px;
+        border-right: 0px;
+    }
+
+    .vessel .vessel_titBox {
+        background: url("") repeat-x scroll 0 -226px rgba(0, 0, 0, 0);
+        border-bottom: 1px solid #fe920f ;
+        height: 39px;
+        line-height: 40px;!important
+    }
+    .vessel{
+        border: 0px ;
+    }
+        .btn_style{
+        border:1px solid #dcdcdc;
+        border-radius: 0px 0px 0px 0px;
+        height:34px;
+        border-bottom:1px solid #fe920f;
+    }
+
+    </style>
+
+{% endblock %}
+{% block right_container %}
+            <!-- 中部 start -->
+                <div style="width: 789px;overflow: auto;float:left">
+                    <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a href="/complain/statistics/?btn_style=1"
+                                class="btn_type btn {% if btn_style == 1 %}btn-primary{% endif %} "
+                                style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 70px">
+                               投诉
+                             </a>
+                             <a href="/repair/statistics/?btn_style=2"
+                               class="btn_type btn {% if btn_style == 2 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 80px">
+                               报修
+                            </a>
+                            <a href="/express/statistics/?btn_style=3"
+                               class="btn_type btn {% if btn_style == 3 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 80px">
+                               快递
+                            </a>
+                            <a href="/worker/statistics/?btn_style=4"
+                               class="btn_type btn {% if btn_style == 4 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 80px">
+                               工作人员
+                            </a>
+                        </div>
+                    </div>
+                    <div  id="table_container">
+                        <div style="margin-left: 307px;position: absolute">
+                            <form action="/complain/statistics/?btn_style=1" method="post">
+                                <input readonly  name="YearAndMonth" placeholder="按年月查询" id="val" style="border: 2px solid #cf1c2f" onclick="showTime(this,'div1');"/>
+                                <button type="submit"
+                                        style="margin-left:-46px;height:22px;width: 42px;border: 1px solid #cf1c2f;background: url(/static/images/search_by_month.png)">
+                                </button>
+                            </form>
+                            <div id="parenDiv">
+                                <div  class="div1" style="position:absolute; margin-top: 20px"><table cellspacing='1' id='div1'></table></div>
+                            </div>
+                        </div>
+                        <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable"id="example" aria-describedby="example_info" >
+                            <thead>
+                                <tr role="row">
+                                    <th>时间</th>
+                                    <th>投诉总量</th>
+                                    <th>环境投诉总量</th>
+                                    <th>安全投诉总量</th>
+                                    <th>员工被投诉总量</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for complain_month_data in complain_months_list %}
+                                    <tr>
+                                        <td>{{ complain_month_data.year_month }}</td>
+                                        <td>{{ complain_month_data.month_complains_num }}</td>
+                                        <td>{{ complain_month_data.month_environment_complains_num }}</td>
+                                        <td>{{ complain_month_data.month_security_complains_num }}</td>
+                                        <td>{{ complain_month_data.month_employee_complains_num }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="el_blank_h10 fn_clear"></div>
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+        $('#datetime').datepicker({
+                duration: '',
+                showTime: true,
+                constrainInput: false
+            });
+        });
+
+        $(document).ready(function () {
+
+            $('#example').dataTable({
+                "iDisplayLength": 7,
+                "aLengthMenu": [
+{#                    [5, 10, 15, -1],#}
+{#                    [5, 10, 15, 20]#}
+                    [8, 18, 26, -1],
+                    [8, 18, 26, 32]
+                ],
+                "bSort": true,
+                "oLanguage": {
+                    "sLengthMenu": "显示 _MENU_每页显示记录",
+                    "sZeroRecords": "对不起没有你要找的记录",
+                    "sInfo": "显示 _START_ 到 _END_ 总共 _TOTAL_ 条记录",
+                    "sInfoEmpty": "显示 0 到 0 总共 0 记录",
+                    "sInfoFiltered": "(从 _MAX_条记录中查找)",
+                    "sSearch": "搜索:"
+                }
+            });
+        });
+        jQuery(function($){
+            $.datepicker.regional['zh-CN'] = {
+                closeText: '确定',
+                prevText: '<上月',
+                nextText: '下月>',
+                currentText: '今天',
+                monthNames: ['一月','二月','三月','四月','五月','六月',
+                '七月','八月','九月','十月','十一月','十二月'],
+                monthNamesShort: ['一','二','三','四','五','六',
+                '七','八','九','十','十一','十二'],
+                dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+                dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],
+                dayNamesMin: ['日','一','二','三','四','五','六'],
+                weekHeader: '周',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: true,
+                yearSuffix: '年'};
+            $.datepicker.setDefaults($.datepicker.regional['zh-CN']);
+});
+    </script>
+    <script src="/static/js/jquery.dataTables.min.js"></script>
+    <script src="/static/js/DT_bootstrap.js"></script>
+    <script src="/static/js/jquery-ui.min.js"></script>
+    <script src="/static/js/timepicker.js"></script>
+    <script src="/static/js/selectMonthPrimitive.js"></script>
+{% endblock %}

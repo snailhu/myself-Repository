@@ -1,0 +1,147 @@
+{% extends "proprietor_base.html" %}
+
+{%  block css %}
+<style>
+.contain{width: 642px;margin-left: 240px;}
+.contain-title span{display: block;padding: 7px 0 7px  15px}
+.contain-title{background-color:#d3d3d3}
+.contain-body{width: 602px;margin: 10px 0 10px 20px;border: 1px solid #e3e3e3}
+.info{height: 100px}
+.info span{display:block;font-size: 20px;padding: 20px}
+.check-box{display: block;position: absolute;}
+.contain-center{height: 40px;background-color: #f2f8ff;margin: 0;border-bottom: 1px solid#e3e3e3}
+.contain-center li{float: left;width: 100px;height: 40px}
+.contain-center span{display: block;margin-top: 10px;text-align: center}
+.detail-list ul{height: 15px}
+.detail-list ul li{float: left;width: 100px;text-align: center;}
+.detail-list ul li a{color: #ffd624}
+.detail-list ul li a:hover{color:#ffef9f }
+#delete{width: 50px;margin:-20px 80px 0 130px;position: absolute}
+.detail-list{padding:15px 0;border-bottom: 1px solid#fff;background-color: #f2f8ff}
+.check-box-name{margin: 0px 0 0 35px;display: block}
+.contain-footer{padding: 10px 0 0 0;background-color: #f2f8ff;height: 50px}
+.check{margin-left: 7px;position: absolute}
+.step-links ul{margin: -20px 0 0 300px;height: 10px}
+.step-links ul li{float: left;text-align: center}
+</style>
+{% endblock %}
+
+{% block container%}
+<div class="contain">
+<div class="contain-title">
+<span>我的微水洗车</span>
+</div>
+{% if  not car_washing_info %}
+<div class="info">
+    <span>暂无相关信息</span>
+</div>
+{% endif %}
+
+<div class="contain-detail">
+{% if car_washing_info %}
+<div class="contain-body">
+    <ul class="contain-center">
+         <li style="border-right: 1px solid #e3e3e3"><span>业主信息</span></li>
+         <li style="border-right: 1px solid #e3e3e3"><span>时间</span></li>
+        <li style="border-right: 1px solid #e3e3e3" ><span>洗车起始时间</span></li>
+        <li style="border-right: 1px solid #e3e3e3"><span>洗车方案</span></li>
+        <li style="border-right: 1px solid #e3e3e3"><span>业主车牌号</span></li>
+        <li><span>洗车详情</span></li>
+    </ul>
+       {% for info in car_washing_info %}
+
+        <div class="detail-list">
+        <ul>
+         <li><div class="form-box"> <div class="check"><input type="checkbox" id="{{ info.id }}" name="chk" class="check-box"></div>{{ info.author.profile}}<div></div></li>
+           <li><div class="">{{ info.apply_time|date:"Y-m-d "}}</div></li>
+           <li>{{ info.start_time|date:"Y-m-d" }}</li>
+         {% ifequal info.washing_type "1" %}<li>单次</li>
+         {% endifequal %}
+         {% ifequal info.washing_case "1" %}<li>方案一</li>
+         {% endifequal %}
+         {% ifequal info.washing_case "2" %}<li>方案二</li>
+         {% endifequal %}
+         {% ifequal info.washing_case "3" %}<li>方案三<li>
+         {% endifequal %}
+         <li>{{ info.other_car_num }}</li>
+         <li><a href="/own_car_washing/detail/?id={{ info.id }}">查看详情</a> </li>
+         </ul>
+        </div>
+
+       {% endfor %}
+<div class="contain-footer">
+<div class="check"><input type="checkbox" id="all" ></div> <span class="check-box-name">全选</span>
+<input type="button" id="delete" value="删除" onclick="info_delete()">
+        <span class="step-links">
+                           <ul>
+                           <li>
+                           <div style="width: 54px;height: 20px">
+                            {% if car_washing_info.has_previous %}
+                                <a href="?page={{ car_washing_info.previous_page_number }}">上一页</a> &nbsp;
+                            {% endif %}
+                           </div>
+                            </li>
+                           <li>
+                               当前第{{car_washing_info.number }}页/总共{{ car_washing_info.paginator.num_pages }}页
+                           </li>
+                            <li style="width: 54px;">
+                            {% if car_washing_info.has_next %}
+                                <a href="?page={{car_washing_info.next_page_number }}">下一页</a>
+                            {% endif %}
+                           </li>
+                           </ul>
+                        </span>
+</div>
+</div>
+
+</div>
+
+{% endif %}
+</div>
+{% endblock %}
+
+{% block script %}
+ <script>
+ function info_delete(){
+     checked_array=new  Array();
+     $('input[type="checkbox"][name="chk"]:checked').each(
+                        function () {
+                            var id = $(this).attr('id');
+                            checked_array.push(id);
+                        }
+                );
+       if (checked_array.length > 0) {
+                    $.post('/own_car_washing/delete/',
+                            {
+                                'id': checked_array.toString()
+                            },
+                            function (data) {
+                                  if(data.success){
+                                        alert(data.info);
+                                        window.location.href = "/own_car_washing/";
+                                  }
+                            }
+                    )
+ }
+ }
+
+ $("#all").click(function(){
+   all=document.getElementById("all")
+ if (all.checked==true){
+$('input[type="checkbox"][name="chk"]').each(
+                        function () {
+                            var id = $(this).attr('checked',"checked");
+                        }
+                );
+     }
+     else
+   {$('input[type="checkbox"][name="chk"]:checked').each(
+                        function () {
+                            var id = $(this).removeAttr('checked',"checked");
+                        }
+                );
+     }
+ })
+
+ </script>
+ {% endblock  %}

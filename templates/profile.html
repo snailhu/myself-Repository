@@ -1,0 +1,57 @@
+{% extends "base_old.html" %}
+{% block title %}用户注册{% endblock %}
+
+{% block body_id %}id_body{% endblock %}
+{% block body %}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                {% if username %}
+                    <a class="navbar-brand" href="/dashboard/">亨通物业管理平台</a>
+                {% else %}
+                    <a class="navbar-brand" href="/index/">亨通物业管理平台</a>
+                {% endif %}
+            </div>
+            <div class="navbar-collapse collapse">
+                <form class="navbar-form navbar-right">
+                    <a class="btn btn-info" href="/profile/">{{ username }}</a>
+                    <a class="btn btn-primary" href="/logout/">登出</a>
+                </form>
+            </div>
+            <!--/.navbar-collapse -->
+        </div>
+    </div>
+    {% block content %}
+
+        <div class="container">
+            {% if not init %}
+                {% if not success %}
+                    <div class="alert alert-danger">
+                        <strong>{{ info }}</strong>
+                    </div>
+                {% else %}
+                    <div class="alert alert-success">
+                        <strong>{{ info }}</strong>
+                    </div>
+                {% endif %}
+            {% endif %}
+            <form class="form-signin" method="post" action="/profile/">
+                <h2 class="form-signin-heading">更新密码</h2>
+
+                <p></p>
+                <input name="old_password" type="password" class="form-control" placeholder="旧密码" required>
+                <input name="new_password" type="password" class="form-control" placeholder="新密码" required>
+                <input name="new_password_again" type="password" class="form-control" placeholder="再次输入新密码" required>
+
+                <button class="btn btn-lg btn-primary btn-block" type="submit">更新密码</button>
+            </form>
+        </div> <!-- /container -->
+    {% endblock %}
+{% endblock %}

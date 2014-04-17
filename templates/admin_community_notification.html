@@ -1,0 +1,358 @@
+{% extends "basecloud.html" %}
+{% block title %}报修管理{% endblock %}
+{% block css %}
+    <link href="/static/css/jquery-ui-1.7.2.custom.css" rel="stylesheet">
+    <link href="/static/js/ueditor/themes/default/css/ueditor.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" charset="utf-8" src="/static/js/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/static/js/ueditor/ueditor.all.min.js"> </script>
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .repair1, span, button {
+            font-size: 15px;
+
+        }
+
+        tr:first-child {
+            background-color: #f3f3f3;;
+        }
+
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+            width: 1171px !important;
+            margin-top: -11px;
+        }
+        .repair_header{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+
+        .vessel .vessel_titBox {
+            background: url("") repeat-x scroll 0 -226px rgba(0, 0, 0, 0);
+            border-bottom: 2px solid #00a1e9;
+            height: 39px;
+            line-height: 40px;!important;
+            width: 646px;
+    }
+        .vessel{
+            border: 0px ;
+        }
+
+
+         .btn_style{
+        border:1px solid #dcdcdc;
+        border-radius: 0px 0px 0px 0px;
+        height:34px;
+        border-bottom:1px solid #00a1e9;
+    }
+
+        .notification_container{
+            height:600px;
+            width: 850px;
+            overflow: auto;
+            border-top: 0px;
+            margin-left: 5px;
+            float: left;
+            background-color: #ffffff;
+            padding-top: 18px;
+            padding-left:20px;
+            margin-bottom: 40px;
+        }
+         .left_cn{
+            height: 501px;
+            }
+    .notification_container2{
+        width: 800px;
+    }
+    .notification_modify{
+        border: 1px solid darkgray;
+        width: 538px;
+        height: 300px;
+        padding:20px 20px
+    }
+    .notification_modify textarea{
+        width: 490px;
+        height: 180px;
+        border-color:darkgray
+    }
+    .input_style{
+        margin-top:15px
+    }
+    textarea{
+        width: 587px;
+        height: 180px;
+        border-color:darkgray
+    }
+    .notification_btn{
+         float: right;
+         width: 68px;height: 32px;!important
+    }
+
+     #no_record .uploadify-button {
+            background-color: #505050;
+            background-image: -moz-linear-gradient(center bottom , #505050 0%, #707070 100%);
+            background-position: center top;
+            background-repeat: no-repeat;
+            border: 2px solid #808080;
+            border-radius: 0px 0px 0px 0px;
+            color: #FFFFFF;
+            font: bold 12px Arial,Helvetica,sans-serif;
+            text-align: center;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+            width: 100%;
+            margin-left: 400px
+            }
+        .swfupload{
+              margin-left: -110px;
+        }
+        .uploadify-button {
+            background-color: #505050;
+            background-image: -moz-linear-gradient(center bottom , #505050 0%, #707070 100%);
+            background-position: center top;
+            background-repeat: no-repeat;
+            border: 2px solid #808080;
+            border-radius: 0px 0px 0px 0px;
+            color: #FFFFFF;
+            font: bold 12px Arial,Helvetica,sans-serif;
+            text-align: center;
+            text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+            width: 100%;
+            }
+        .uploadify-queue-item .cancel a {
+            background: url("/static/images/uploadify-cancel.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+            float: right;
+            height: 16px;
+            text-indent: -9999px;
+            width: 16px;
+        }
+    </style>
+
+{% endblock %}
+{% block right_container %}
+
+    <div class="notification_container">
+
+                <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a id="exist_notify"
+                                class="btn_style btn_type btn btn-primary"
+                                style="width: 80px">
+                               已有通知
+                             </a>
+                            <a id="add_notify"
+                               class="btn_style btn_type btn "
+                               style="width: 120px;">
+                                <img style="margin-top: -5px" src="/static/images/plus_icon.png"/>
+                               <span >添加新通知</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="add_notification" style="display: none">
+                            <div class="notification_container2">
+                                <div>
+                                    <span>标题：</span><input name="input_title" type="text" style="width: 200px">
+                                </div>
+        {#                        <div class="input_style">#}
+        {#                            <span>时间：</span><input type="text" name="time" id="datetime" value=""style="width: 200px"/>#}
+        {#                        </div>#}
+                                <div class="input_style">
+                                    <span>内容：</span>
+                                   <script id="editor" type="text/plain" style="width:650px;height:300px;"></script>
+                                </div>
+                            </div>
+
+
+
+                            <div style="text-align: right;padding: 10px ;">
+                            <input type="file" name="file_upload" class="uploadify" id="file_upload" />
+                                <button class='btn'
+                                  onclick="add_notification()"
+                                  style=" background: url('/static/images/notification_submit.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                                  width: 68px;height: 32px;display: block;margin: -45px 0 0 550px;position: absolute">
+                                </button>
+                            </div>
+                    </div>
+                    <div id="show_notification">
+                        {% if notifications %}
+                        {% for notification in notifications %}
+                         <div style="margin-top: 20px;height: 37px"id="pear_record_{{ notification.id }}">
+
+                                     <div style="border: 1px solid darkgray;
+                                         width: 488px;
+                                         height: 35px;
+                                         padding: 5px 5px;float: left"id="theme_{{ notification.id }}">
+                                        <a href="/notification/detail/?id={{ notification.id }}"target="_blank">
+                                            <span>{{ notification.notification_theme }}</span>
+                                        </a>
+                                         <div style="float: right">
+                                            <span style="text-align: right">{{ notification.notification_time| date:"Y-m-d H:i:s" }}</span>
+                                        </div>
+                                    </div>
+                                  <button class='btn notification_btn'
+                                          id="delete_{{ notification.id }}"
+                                              onclick="delete_notification(this)"
+                                              name="{{ notification.id }}"
+                                              style=" background: url('/static/images/yellow_delete.png') no-repeat;
+                                              margin-right: 182px;">
+                                 </button>
+                                 <button class='btn notification_btn'
+                                          style=" background: url('/static/images/yellow_modify.png') no-repeat;
+                                          margin-right: 10px;" onclick=javascript:window.location.href="/community/notification/modify_page/?id={{ notification.id }}">
+                                </button>
+                         </div>
+                        {% endfor %}
+                        <div style="margin-top: 15px;text-align: right;width: 650px">
+                                <span class="step-links">
+                                    {% if notifications.has_previous %}
+                                        <a href="?page={{ notifications.previous_page_number }}&deal_status={{ btn_style }}">《上一页》</a> &nbsp;
+                                    {% endif %}
+                                    <span class="current">
+                                         当前页： {{ notifications.number }}/{{ notifications.paginator.num_pages }}.
+                                    </span> &nbsp;
+                                    {% if notifications.has_next %}
+                                        <a href="?page={{ notifications.next_page_number }}&deal_status={{ btn_style }}">《下一页》</a>
+                                    {% endif %}
+{#                                    <span>跳转到:<input type="text"style="width: 30px" id="input_page"></span>#}
+{#                                     <button id="decide_skip_page"class="btn"name="{{ btn_style }}"#}
+{#                                    style="float:right;margin-left:5px;margin-right: 5px;margin-top: -1px;width: 42px;height: 25px;#}
+{#                                    background: url('/static/images/sure.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0);">#}
+{#                                    </button>#}
+                                </span>
+                        </div>
+                    {% else %}
+                    <h4>暂无通知</h4>
+                    {% endif %}
+
+                    </div>
+
+    </div>
+
+{% endblock %}
+<script>
+</script>
+{% block script %}
+<script type="text/javascript">
+var ue = UE.getEditor('editor');
+    $(function(){
+        $(function() {
+            $("#file_upload").uploadify({
+             locale: {
+                error: 'Error',
+                complete: '完成',
+                cancelled: '取消'
+              },
+               'buttonText' : '导入Word   ',
+                height        : 30,
+                'fileTypeDesc' : 'Word file',
+                'fileTypeExts': '*.docx',
+                swf           : '/static/uploadify.swf',
+                uploader      : '/import/notification/word/',
+                width         : 110,
+               'uploadLimit' : 1,
+               'onUploadSuccess' : function(file, data, response) {
+                   alert('文件' + file.name + '导入成功 ');
+                  window.location.href = "/community/notification/";
+                },
+                'onUploadError' : function(file, errorCode, errorMsg, errorString) {
+            alert('文件 ' + file.name + ' 内部格式不正确: ' + errorString);
+        }
+            });
+        });
+        $('.btn_style').click(function(){
+                   $(this).addClass('btn-primary').siblings().removeClass('btn-primary');
+        })
+        $('#exist_notify').click(function(){
+              window.location.href="/community/notification/";
+{#            $('#show_notification').show();#}
+{#            $('#add_notification').hide();#}
+        })
+         $('#add_notify').click(function(){
+            $('#show_notification').hide();
+            $('#add_notification').show();
+        })
+
+    })
+    function delete_notification(obj){
+        var delete_id=$(obj).attr('name');
+        if(confirm("是否删除？")){
+            $.post('/delete/notification/',
+                    {
+                        'delete_id':delete_id
+                    },
+                    function(data){
+                        if(data.success){
+                            alert(data.info);
+                            $("#pear_record_"+delete_id+"").remove();
+                        }
+
+                    }
+            )
+        }
+    }
+    function add_notification(){
+         var notification_title=$('input[name=input_title]').val();
+        var notification_content=UE.getEditor('editor').getContent();
+         if (notification_title && notification_content){
+             $.post('/add/notification/',
+                     {
+                         'notification_title':notification_title,
+                         'notification_content':notification_content
+                     },
+                     function(data){
+                         if(data.success){
+                             alert(data.info);
+                         }
+                     }
+             )
+
+         }else{
+             alert('请填写相关信息');
+         }
+
+    }
+
+</script>
+
+{% endblock %}

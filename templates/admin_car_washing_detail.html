@@ -1,0 +1,198 @@
+{% extends "base_live.html" %}
+{% block title %}微水洗车{% endblock %}
+{% block css %}
+    <style>
+         .left-info{
+             text-align: right;
+         }
+         td{
+             padding: 10px;
+         }
+         .back{
+             border: 0px;
+             background-color:  #ff3c3c;
+             height: 30px;
+             border-radius: 2px;
+             color: #fff;
+             width: 70px;
+             margin-left: 180px;
+         }
+         .center{
+             margin: 20px 0 30px 80px;
+         }
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .repair1, span, button {
+            font-size: 15px;
+
+        }
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+{#            border: 1px solid red;#}
+            width: 1171px !important;
+        }
+        .repair_header{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+
+             .repair_header li{
+                padding-left: 116px;
+                float: left;
+              }
+
+
+        .repair_header_deal li{
+            padding-left: 89px;
+            float: left;
+        }
+
+        .vessel .vessel_titBox {
+            background: url("") repeat-x scroll 0 -226px rgba(0, 0, 0, 0);
+            border-bottom: 2px solid #fe920f;
+            height: 39px;
+            line-height: 40px;!important
+    }
+        .vessel{
+            border: 0px ;
+        }
+        .once li{
+            padding-left: 195px;
+        }
+    .btn_style{
+        border:1px solid #dcdcdc;
+        border-radius: 0px 0px 0px 0px;
+        height:34px;
+        border-bottom:1px solid #fe920f;
+    }
+    </style>
+
+{% endblock %}
+{% block right_container %}
+            <!-- 中部 start -->
+            <div style="width: 944px;overflow: auto;border-top: 0px;margin-left: 5px;float: left;background-color: #ffffff">
+                  <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a href="/car_washing/?status=once"
+                                class="btn_style btn_type btn {% if status == 'once' %}btn-primary{% endif %} "
+                                style="width: 70px">
+                              单次
+                             </a>
+
+
+                            <a href="/car_washing/?status=month"
+                               class="btn_style btn_type btn {% if status == 'month' %}btn-primary{% endif %} "
+                               style="width: 80px">
+                               包月
+                            </a>
+
+                             <a href="/car_washing/?status=season"
+                                class="btn_style btn_type btn {% if status == 'season' %}btn-primary{% endif %} "
+                                style="width: 70px">
+                               包季
+                             </a>
+                            <a href="/car_washing/?status=year"
+                               class="btn_style btn_type btn {% if status == 'year' %}btn-primary{% endif %} "
+                               style="width: 80px">
+                               包年
+                            </a>
+                        </div>
+                         <div class="center">
+            <table>
+                <tr>
+                    <td class="left-info">业主信息:</td><td>{{ detail.author.profile }}</td>
+                </tr>
+
+                <tr>
+                    <td class="left-info">付费方式:</td><td>
+                    {% ifequal detail.washing_type "1" %}单次:15元/次{% endifequal %}
+                    {% ifequal detail.washing_type "2" %}包月:120元/月,10次/月{% endifequal %}
+                    {% ifequal detail.washing_type "3" %}包季:300元/月,10次/月{% endifequal %}
+                    {% ifequal detail.washing_type "4" %}包月:1000元/次,10次/月{% endifequal %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left-info">洗车方案:</td>
+                     {% ifequal detail.washing_type "1" %}
+                    <td>单次</td>
+                    {% endifequal %}
+                    {% ifequal detail.washing_case "1" %}
+                    <td>方案一</td>
+                    {% endifequal %}
+                     {% ifequal detail.washing_case "2" %}
+                    <td>方案二</td>
+                    {% endifequal %}
+                     {% ifequal detail.washing_case "3" %}
+                    <td>方案三</td>
+                    {% endifequal %}
+                </tr>
+                <tr>
+                    <td class="left-info">洗车起始时间:</td>
+                    <td>{{ detail.start_time|date:"Y-m-d" }}</td>
+                </tr>
+                <tr>
+                    <td class="left-info">车牌号:</td>
+
+                    <td>{{ detail.other_car_num }}
+                </tr>
+                <tr>
+                    <td class="left-info">使用情况:</td>
+
+                   {% ifequal detail.washing_status 0 %}
+                      <td>未使用</td>
+                   {% endifequal %}
+                   {% ifequal detail.washing_status 1 %}
+                      <td>已使用</td>
+                   {% endifequal %}
+                </tr>
+            </table>
+                         </div>
+                          <div><input type="button" class="back" value="返回" onclick="javascript:history.go(-1)" > </div>
+                    </div>
+
+             </div>
+
+
+{% endblock %}
+

@@ -1,0 +1,75 @@
+{% extends "baseheader.html" %}
+
+{% block css %}
+<style>
+.contain{border: 1px solid#e3e3e3;width: 800px;margin: 30px auto 50px}
+.contain-title span{display: block;padding: 8px 0 8px 15px}
+.contain-body{border-top: 1px solid #e3e3e3;border-bottom: 1px solid #e3e3e3;background-color: #fff;padding: 40px 0 20px 30px;height: 240px}
+.contain-footer{background: #fff;height: 60px}
+#case-submit{width: 120px;height: 30px;background-color: #ff3c3c;border: none;color: #fff;margin: 12px 0 0 35px;border-radius: 4px;}
+.contain-detail {padding:7px 0}
+.detail-name{display: block; width: 140px; text-align: right;}
+.detail-contain{display: block;margin: -20px 0 0 150px;float: left}
+#cash{color: #ff0000}
+</style>
+{% endblock %}
+
+{% block container %}
+<div class="contain">
+<div class="contain-title">
+<span>微水洗车费</span>
+</div>
+
+<div class="contain-body">
+<div class="contain-detail">
+<span class=" detail-name">选择付费方式:</span><span class="detail-contain" id="washing_type" value={{ washing_type }}>
+    {% ifequal washing_type "1" %}单次:15元/次{% endifequal %}
+    {% ifequal washing_type "2" %}包月:120元/月,10次/月{% endifequal %}
+    {% ifequal washing_type "3" %}包季:300元/月,10次/月{% endifequal %}
+    {% ifequal washing_type "4" %}包月:1000元/次,10次/月{% endifequal %}
+</span>
+</div>
+
+{% if month_status %}
+<div class="contain-detail">
+<span class=" detail-name">选择洗车方案:</span><span  class="detail-contain" id="washing_case" value={{ washing_case }}>
+    {% ifequal washing_case "1" %}方案一{% endifequal %}
+    {% ifequal washing_case "2" %}方案二{% endifequal %}
+    {% ifequal washing_case "3" %}方案三{% endifequal %}
+</span>
+ </div>
+  <div class="contain-detail" >
+<span class=" detail-name">选择洗车起始时间:</span><span class="detail-contain" id="single-time" value={{ start_time }}>{{ start_time }}</span>
+</div>
+{% endif %}
+
+ {% if single_status %}
+ <div class="contain-detail" >
+<span class=" detail-name">单次洗车时间:</span><span class="detail-contain" id="month-time" value={{ start_time }}>{{ start_time }}</span>
+</div>
+{% endif %}
+
+ <div class="contain-detail">
+<span class=" detail-name">车牌号:</span><span class="detail-contain" id="car_num" value={{ car_num }}>{{ car_num }}</span>
+ </div>
+
+ <div class="contain-detail">
+<span class=" detail-name">应付金额:</span><span  class="detail-contain" id="cash" name="cash" >
+      {% ifequal washing_type "1" %}15.00元{% endifequal %}
+    {% ifequal washing_type "2" %}120.00元{% endifequal %}
+    {% ifequal washing_type "3" %}300.00元{% endifequal %}
+    {% ifequal washing_type "4" %}1000.00元{% endifequal %}
+</span>
+ </div>
+
+</div>
+<div class="contain-footer">
+<button id="case-submit">确认支付</button>
+</div>
+</div>
+{% endblock %}
+
+{% block script %}
+
+
+{% endblock %}

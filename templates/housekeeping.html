@@ -1,0 +1,270 @@
+{% extends "baseheader.html" %}
+{% block title %}家政服务{% endblock %}
+{% block css %}
+    <link href="/static/css/jquery-ui-1.7.2.custom.css" rel="stylesheet">
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .complain1, span, button {
+            font-size: 15px;
+
+        }
+
+{#        tr:first-child {#}
+{#            background-color: #A674B0;#}
+{#        }#}
+{##}
+{#        tr:hover {#}
+{#            background-color: #A674B0;#}
+{#        }#}
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+            width: 1010px !important;
+        }
+        .ui-datepicker{ z-index: 9999 !important;}
+
+    </style>
+
+{% endblock %}
+{% block container %}
+            <!-- 中部 start -->
+            <div style="width: 915px;overflow: auto;float:left">
+                <div class="el_blank_h20"></div>
+                <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                    <div class="vessel_titBox"><span class="tit">家政服务</span></div>
+                </div>
+                {% if is_show %}
+                    <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered dataTable"
+                           id="repair_item_table" aria-describedby="example_info">
+                        <thead>
+                        <tr role="row">
+                            <th>项目</th>
+                            <th>内容</th>
+                            <th>费用描述</th>
+                            <th>备注</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        {% for item in housekeeping_items    %}
+
+                            <tr class="except_one">
+                                <td>
+                                    <span>{{ item.item }}</span>
+                                </td>
+                                <td>{{ item.content }}</td>
+                                <td>{{ item.price_description}}</td>
+                                <td>{{ item.remarks}}</td>
+                                <td><input type="checkbox" name="chk" id={{ item.id }}></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <div class="umDataLstBox">
+                            <div class="umDataBox_s1 umDataBox">
+                                    <div class="umDataBox_receiptBox">
+                                        <p class="title">暂无相关记录</p>
+                                    </div>
+                            </div>
+                            <!-- 分页 start -->
+                            <div class="pagesBox"></div>
+                    </div>
+                    <!-- 分页 end -->
+                {% endif %}
+                <div style="float: right;width: 53px; margin-top: -24px;margin-right: -184px;">
+                    <button class='btn'
+{#                      data-toggle="modal"#}
+                      id="show_modal"
+                      style=" background: url('/static/images/submit_housekeeping.png') no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+                      width: 54px;height: 28px;
+                     ">
+                    </button>
+                </div>
+
+            </div>
+            <!-- 中部 end -->
+            <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">请填入允许服务的时间段</h4>
+                  </div>
+                     <div style="margin-top: 10px">
+                        <span>允许时间：</span>
+                        <input type="text" name="start_time" id="start_time" value=""/>
+                        <span class="sep"> - </span>
+                        <input type="text" name="end_time" id="end_time" value=""/>
+                    </div>
+{#                  <div class="modal-body">#}
+{#                    <textarea style="width:500px" id="text_area"></textarea>#}
+{#                  </div>#}
+                  <div class="modal-footer">
+{#                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>#}
+                    <button type="button" class="btn btn-default" id="submit_housekeeping">确认</button>
+                  </div>
+                </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+            <!-- 右侧 end -->
+            <div class="el_blank_h10 fn_clear"></div>
+        </div>
+    <!-- page -->
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        jQuery(function($){
+            $.datepicker.regional['zh-CN'] = {
+                closeText: '确定',
+                prevText: '<上月',
+                nextText: '下月>',
+                currentText: '今天',
+                monthNames: ['一月','二月','三月','四月','五月','六月',
+                '七月','八月','九月','十月','十一月','十二月'],
+                monthNamesShort: ['一','二','三','四','五','六',
+                '七','八','九','十','十一','十二'],
+                dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+                dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],
+                dayNamesMin: ['日','一','二','三','四','五','六'],
+                weekHeader: '周',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: true,
+                yearSuffix: '年'};
+            $.datepicker.setDefaults($.datepicker.regional['zh-CN']);
+        });
+
+
+        $("#show_modal").click(function(){
+
+            $('#myModal').modal('show');
+{#              $('#datetime').datepicker({#}
+{#                duration: '',#}
+{#                showTime: true,#}
+{#                constrainInput: false#}
+{#            });#}
+        })
+
+        $(function () {
+            $('#show_modal').click(function(){
+                 $('#text_area').val("");
+                $('#myModal').modal('show');
+            })
+            $('#submit_housekeeping').click(function () {
+                var checked_array = new Array();
+                $('input[type="checkbox"][name="chk"]:checked').each(
+                        function () {
+                            var id = $(this).attr('id');
+                            checked_array.push(id);
+                        }
+                );
+                if (checked_array.length > 0) {
+{#                    var allowable_time_description = $('#text_area').val().replace(/(^\s*)|(\s*$)/g, "");#}
+                    var start_time =$("#start_time").val();
+                    var ent_time = $('#end_time').val();
+                    var allowable_time_description = ""+start_time+"  到  "+ent_time+"";
+                    if (allowable_time_description.length != 0){
+                        $.post('/submit/housekeeping/',
+                            {
+                                'housekeeping_item_string': checked_array.toString(),
+                                'allowable_time_description': allowable_time_description
+                            },
+                            function (data) {
+                                if (data.success) {
+                                    alert(data.info);
+                                    window.location.href = "/housekeeping/";
+                                }
+                            }
+                        )
+                    }
+                    else{
+                        alert("请填入允许服务时间");
+                    }
+
+                } else {
+                    alert("请选择处理数据");
+                }
+            });
+
+
+        });
+
+        $(document).ready(function () {
+            $('#repair_item_table').dataTable({
+                "oLanguage": {
+                    "sLengthMenu": "显示 _MENU_每页显示记录",
+                    "sZeroRecords": "对不起没有你要找的记录",
+                    "sInfo": "显示 _START_ 到 _END_ 总共 _TOTAL_ 条记录",
+                    "sInfoEmpty": "显示 0 到 0 总共 0 记录",
+                    "sInfoFiltered": "(从 _MAX_条记录中查找)",
+                    "sSearch": "搜索:"
+                }
+            });
+        });
+        $(document).ready(function () {
+            $('#start_time').datepicker({
+                duration: '',
+                 showTime: true,
+                constrainInput: false
+
+            });
+        });
+
+         $(document).ready(function () {
+            $('#end_time').datepicker({
+                duration: '',
+                 showTime: true,
+                constrainInput: false
+
+            });
+        });
+
+
+    </script>
+
+    <script src="/static/js/jquery.dataTables.min.js"></script>
+    <script src="/static/js/DT_bootstrap.js"></script>
+    <script src="/static/js/jquery-ui.min.js"></script>
+    <script src="/static/js/timepicker.js"></script>
+{% endblock %}

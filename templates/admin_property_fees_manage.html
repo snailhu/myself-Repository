@@ -1,0 +1,281 @@
+{% extends "basecloud.html" %}
+{% block title %}物业缴费{% endblock %}
+{% block css %}
+<link href="/static/css/jquery-ui-1.7.2.custom.css" rel="stylesheet">
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .repair1, span, button {
+            font-size: 15px;
+
+        }
+
+        tr:first-child {
+            background-color: #f3f3f3;;
+        }
+
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+{#            border: 1px solid red;#}
+            width: 1171px !important;
+        }
+        .repair_header{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+        .repair_header li{
+            padding-left: 116px;
+            float: left;
+        }
+
+        .vessel .vessel_titBox {
+            background: url("") repeat-x scroll 0 -226px rgba(0, 0, 0, 0);
+            border-bottom: 1px solid #00a1e9;
+            height: 40px;
+            line-height: 40px;!important
+    }
+        .vessel{
+            border: 0px ;
+        }
+
+        .repair_right_container{
+
+        }
+        .repair_right_container li{
+            float:left;
+            text-align: center;
+            padding-top: 8px;
+            height: 80px;
+{#            border: 1px solid red;#}
+        }
+      .border_style{
+{#          border-left:2px solid #eeeeee#}
+      }
+    .park_header ul li{
+        width:100px;
+        height: 30px;
+        border: 1px solid red;
+   }
+    .btn_group{
+        float: right;
+        display: none;
+        margin-top: -2px;
+    }
+    .btn_style{
+        width: 28px;
+        height: 27px
+    }
+    </style>
+
+{% endblock %}
+{% block right_container %}
+    <div style="height:500px;width: 850px;overflow: auto;border-top: 0px;margin-left: 5px;float: left;background-color: #ffffff">
+                <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a href="/house/pay_fees/?btn_style=1"
+                                class="btn_type btn {% if btn_style == 1 %}btn-primary{% endif %} "
+                                style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 95px">
+                               物业费详情
+                             </a>
+                             <a href="/property_fee_manage/?btn_style=2"
+                               class="btn_type btn {% if btn_style == 2 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 95px">
+                                 物业费管理
+                            </a>
+                        </div>
+                </div>
+                <div style="padding: 10px 20px">
+                    <div style="width:355px">
+                        <span>物业费金额：</span>
+                        <span id="show_money">{% if fee_standard %}{{ fee_standard.fee }}元/平{% else %}暂无规定标准{% endif %}</span>
+                        <input type="text" id="modify_input" style="display: none"/>&nbsp;&nbsp;&nbsp;
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_fee(this)"id="modify_one">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
+                        <div id="show_choice_one" class="btn_group">
+                            <button style="background: url(/static/images/decide.png) no-repeat;"class="btn_style"onclick="submit_fee()"></button>
+                            <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn_style"onclick="cancel_modify_fee(this)"></button>
+                        </div>
+                    </div>
+                    <div style="margin-top: 20px;width:390px">
+                        <span>物业费缴费截止时间：</span>
+                        <span id="show_time">{% if fee_standard %}{{ fee_standard.deadline | date:"Y-m-d" }}{% else %}暂无规定标准{% endif %}</span>
+                        <input type="text" name="datetime" id="datetime" value="" readonly  style="display: none"/>&nbsp;&nbsp;&nbsp;
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_deadline(this)" id="modify_two">修改</span>
+                        <div class="btn_group"id="show_choice_two">
+                            <button style="background: url(/static/images/decide.png) no-repeat;"class="btn_style"onclick="submit_time()"></button>
+                            <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn_style" onclick="cancel_modify_deadline(this)"></button>
+                        </div>
+                    </div>
+
+                </div>
+                  <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                  </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+
+        function modify_fee(obj){
+            $(obj).hide();
+            $('#show_choice_one').show()
+            $('#modify_input').show()
+            $('#show_money').hide()
+
+        }
+        function modify_deadline(obj){
+            $(obj).hide();
+            $('#show_choice_two').show()
+            $('#show_time').hide()
+            $('#datetime').show()
+        }
+        function cancel_modify_deadline(obj){
+            $('#show_choice_two').hide()
+            $('#modify_two').show()
+            $('#show_time').show()
+            $('#datetime').hide()
+        }
+        function cancel_modify_fee(obj){
+            $('#show_choice_one').hide()
+            $('#modify_one').show()
+            $('#show_money').show()
+            $('#modify_input').hide()
+        }
+
+        function submit_fee(){
+            $('#show_choice_one').hide()
+            var fee=$('#modify_input').val();
+            $('#modify_one').show()
+            $('#show_money').show()
+            $('#modify_input').hide()
+{#            var re = /^\d+(\.\d*)?$|\.\d+$/#}
+            var re = /^\d+\.?\d+$/
+            if (fee.replace(/(^\s*)|(\s*$)/g, "")){
+                if (re.test(fee)){
+                        $.post('/modify_property_fee/',
+                        {
+                             'new_fee':fee
+                        },
+                       function(data){
+                           if(data.success){
+                                $('#show_money').html(''+fee+'元/平')
+                               alert(data.info);
+                           }else{
+                               alert(data.info);
+                           }
+
+                       }
+                    )
+                }else{
+                    $('#show_money').hide()
+                    $('#modify_one').hide()
+                    $('#show_choice_one').show()
+                    $('#modify_input').show()
+                    alert("必须为数字");
+                }
+
+            }else{
+                $('#show_money').hide()
+                $('#modify_one').hide()
+                $('#show_choice_one').show()
+                $('#modify_input').show()
+                    alert("请填入数字");
+                }
+
+        }
+
+        function submit_time(){
+            $('#show_choice_two').hide()
+            var new_deadline=$('#datetime').val();
+            $('#modify_two').show()
+            $('#show_time').show()
+            $('#datetime').hide()
+            var set_month = new_deadline.split("-")[1];
+            if (parseInt(set_month)>=6){
+                      $.post('/modify_property_deadline/',
+                        {
+                             'remind_time': new_deadline
+                        },
+                       function(data){
+                           if(data.success){
+                                $('#show_time').html(''+new_deadline+'')
+                               alert(data.info);
+                           }else{
+                               alert(data.info);
+                           }
+
+                       }
+                    )
+            }else{
+                alert("因为是下半年截止，月份必须大于六月")
+            }
+        }
+       $(document).ready(function () {
+            $('#datetime').datepicker({
+                duration: '',
+                constrainInput: false
+            });
+        });
+         jQuery(function($){
+            $.datepicker.regional['zh-CN'] = {
+                closeText: '确定',
+                prevText: '<上月',
+                nextText: '下月>',
+                currentText: '今天',
+                monthNames: ['一月','二月','三月','四月','五月','六月',
+                '七月','八月','九月','十月','十一月','十二月'],
+                monthNamesShort: ['一','二','三','四','五','六',
+                '七','八','九','十','十一','十二'],
+                dayNames: ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'],
+                dayNamesShort: ['周日','周一','周二','周三','周四','周五','周六'],
+                dayNamesMin: ['日','一','二','三','四','五','六'],
+                weekHeader: '周',
+                dateFormat: 'yy-mm-dd',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: true,
+                yearSuffix: '年'};
+            $.datepicker.setDefaults($.datepicker.regional['zh-CN']);
+        });
+    </script>
+{% endblock %}

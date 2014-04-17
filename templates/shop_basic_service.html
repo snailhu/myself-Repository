@@ -1,0 +1,86 @@
+{% extends "shop_basic.html" %}
+
+{% block css %}
+<style>
+.service-list ul{width: 650px;height: 160px;padding: 40px 0 0 170px;}
+.service-list li{ margin-right: 150px;padding: 5px;display: inline-block;height: 142px;width: 132px;border-radius: 4px;cursor: pointer;}
+.service-list li.clicked{padding: 0;border: 5px solid #2a95df;background: #2a95df}
+.service-list label{background:#f0f0f0;display: inline-block;height: 140px;width: 130px;border: 1px solid #fff;border-radius: 2px;cursor: pointer;box-shadow: 0 0 4px #c3c3c3 ;}
+.service-list label.hover{border:0px;padding:1px;background: #fff;}
+.service-list label.clicked{border:0px;padding:1px;background: #fff;box-shadow:0px 4px 10px  #a3a3a3 inset }
+.service-list li:hover{padding: 0px;border: 5px solid #2a95df;background: #2a95df}
+.service-list span{margin: 8px 0 0 14px;display: block;width: 100px;height: 30px;text-align: center;font-size: 20px;border: 2px solid ;border-radius: 4px;}
+.service-name{margin-top:2px;}
+.basic-service{display: none;}
+</style>
+{% endblock %}
+
+{%  block title %} 基础会员服务{% endblock %}
+{% block basic-service %}current{% endblock %}
+{% block contain %}
+<div class="contain">
+
+    <div class="contain-left">
+        <div class="service">
+               <div class="service-title">
+                   选择基础会员服务
+               </div>
+
+               <div class="service-list">
+                <ul>
+                   <li class="service-select">
+                      <label>
+                       <span><div class="service-name">15元/月</div></span>
+                       </label>
+                   </li>
+
+                   <li class="service-select">
+                       <label>
+                       <span><div class="service-name"> 150元/年</div></span>
+                       </label>
+                   </li>
+                </ul>
+               </div>
+        </div>
+
+        <div class="detail">
+             <div class="service-title">
+                 详细信息
+                 <button class="detail-switch">
+                     <span id="open-detail">打开</span>
+                     <span id="close-detail" style="display: none">关闭</span>
+                 </button>
+             </div>
+
+             <div class="service-detail">
+
+             </div>
+        </div>
+
+    </div>
+
+    <div class="contain-right">
+         <div class="abstract-title">
+            摘要
+        </div>
+        <div class="abstract-contain">
+            <img src="/static/images/android.png">
+            <ul id="abstract-box" style="display: none">
+                <li>
+                    <span class="abstract-service-name" id="type" ></span>
+                    <input type="text" class="input-box">
+                </li>
+                <li>
+                    <button id="add-to-car">选择</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+</script>
+{% endblock %}
+

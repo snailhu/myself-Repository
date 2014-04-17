@@ -1,0 +1,52 @@
+{% extends "baseheader.html" %}
+{% block title %}查看详情{% endblock %}
+{% block css %}
+    <style>
+
+    .container_inner {
+         margin: 15px auto;
+    }
+
+    .container{
+            width: 970px; !important
+    }
+
+    .top_style{
+         margin-top: 10px;
+     }
+
+    </style>
+{% endblock %}
+{% block container %}
+    <div class="container_inner" >
+        <div>
+            <span>业主信息：</span>
+            <span>{{ complain.community.title }}</span>小区，
+            <span>{{ complain.author_detail.floor }}</span>幢，
+            <span>{{ complain.author_detail.gate_card }}</span>房间，户主：
+            <span>{{ complain.author_detail.profile.username}}</span>
+        </div>
+        <div class="top_style">
+            <span>投诉时间：{{complain.timestamp| date:"Y-m-d H:i:s" }}</span>
+        </div>
+        <div class="top_style">
+            <span>投诉类型：{{ complain.type }}</span>
+        </div >
+        <div class="top_style"><span>投诉内容：</span></div>
+        <div >
+            <span >{{ complain.content}}</span>
+        </div>
+        <div style="margin-top: 10px"><span>满意度反馈内容：</span></div>
+        {% if complain.pleased_reason %}
+            <div >
+                <span >{{ complain.pleased_reason}}</span>
+            </div>
+        {% else %}
+            <div >
+                <span >暂无反馈内容</span>
+            </div>
+        {% endif %}
+        <div class="top_style"><span>图片详情：</span></div>
+         <img  src="/media/{{ complain.src }}"/>
+    </div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'baseheader.html' %}
+{% block css %}
+<style>
+.contain{width: 840px;height: 400px;margin: 0 auto}
+.service-name{height: 100px;width: 260px;margin: 50px;background-color: #eaeaea;font-size: 20px;cursor: pointer}
+.service-name span{display: block; padding: 40px 0 0 85px}
+#insurance{position: relative;margin: -150px 0 0 400px}
+#micro-water{position: relative;margin: -150px 0 0 400px}
+.service-name:hover{background-color: #bad804;color: #fff;
+}
+</style>
+{% endblock %}
+
+<body>
+{% block container %}
+    <div class="contain">
+       <div class="service-name" id="recovery" onclick="javascript:window.location.href=/#/">
+         <span>废品回收</span>
+       </div>
+
+       <div class="service-name" id="insurance">
+         <span>保险服务</span>
+       </div>
+
+
+       <div class="service-name" id="drive">
+         <span>汽车代驾</span>
+       </div>
+
+       <div class="service-name" id="micro-water" onclick="javascript:window.location.href='/local/micro_water/'" >
+         <span>微水洗车</span>
+       </div>
+    </div>
+{% endblock %}
+</body>

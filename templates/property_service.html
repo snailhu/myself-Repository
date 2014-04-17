@@ -1,0 +1,192 @@
+{% extends "baseheader.html" %}
+{% block title %}物业服务{% endblock %}
+{% block css %}
+     <style>
+        .qq-upload-button {
+            left: 0;
+            top: 0;
+            color: #9C9B9B;
+            text-align: center;
+            line-height: 100px;
+            font-weight: bold;
+            position: absolute;
+            cursor: pointer;
+        }
+        body{
+                background-color: #f5f7fa;!important
+            }
+     .type{
+         float: left;
+         margin-left: 10px;
+
+     }
+     .out_container{
+         float: left;
+         padding-left: 30px
+     }
+     .img_container{
+         width: 150px;
+         height: 150px;
+         background-color: #ffffff;
+         padding-top:45px;
+         padding-left: 45px
+     }
+     .bottom_container{
+         width: 180px;
+         height: 140px;
+         background-color: #e8e8e8;
+         padding-top:45px;
+         padding-left: 45px
+     }
+     .text_container{
+         padding-left: 45px;
+         padding-top: 10px
+     }
+     .img_limit{
+         height:70px;
+         width:100px;
+
+     }
+     .right_container{
+         border: 1px solid #d8d8d8;
+         margin-top: 10px;
+         float: right;
+         width:445px;
+         height: 372px;
+         background-color: #f5f5f5
+     }
+     .left_container_header{
+          padding-left: 33px;
+         padding-top: 5px;
+         border-bottom:1px solid #d8d8d8;
+         height: 35px
+     }
+     .service_title{
+        background: url('/static/images/property_service.png') no-repeat;
+         height:30px;
+         margin-top: 15px
+     }
+     .left_container{
+{#         border: 1px solid red;#}
+         margin-top: 10px;
+         float: left;
+         width:518px;
+     }
+        .img_container:hover {
+        background: #fffbea;
+        }
+        </style>
+{% endblock %}
+{% block container %}
+     <div class="s_ifs_ix main el_container" >
+       <div class="service_title">
+           <div style="padding-left: 33px;padding-top: 5px"><span><strong><font color="#808080">物业服务</font></strong></span></div>
+       </div>
+       <div class="left_container">
+           <div>
+               <div  style="float: left" class="a_container">
+                   <a class="item_s5 item out" href="/house/pay_fees/">
+                       <div class="img_container"style="padding-left: 27px;padding-top: 52px" name="fee" text_name="物业费">
+                         <div class="img_limit" style="background: url('/static/images/property_service_fee.png') no-repeat;"></div>
+                       </div>
+                       <div class="text_container"><span>物业费</span></div>
+                   </a>
+               </div>
+                   <div  class="out_container a_container" >
+                       <a class="item_s4 item out" href="/parking/fees/" >
+                           <div class="img_container" name="parking" text_name="停车费">
+                             <div style="background: url('/static/images/property_service_parking.png') no-repeat;"class="img_limit"></div>
+                           </div>
+                           <div class="text_container"><span>停车费</span></div>
+                       </a>
+                   </div>
+
+               <div  class="out_container a_container" >
+                   <a class="item_s1 item out" href="/repair/">
+                       <div class="img_container" name="repair" text_name="报&nbsp;修">
+                         <div style="background: url('/static/images/property_service_repair.png') no-repeat;"class="img_limit"></div>
+                       </div>
+                       <div class="text_container"><span>报&nbsp;修</span></div>
+                   </a>
+               </div>
+           </div>
+           <div class="a_container" style="float: left;margin-top: 10px"  >
+                <div  style="float: left" >
+                    <a class="item_s2 item out" href="/complain/">
+                       <div class="img_container" name="complain" text_name="投&nbsp;诉">
+                         <div style="background: url('/static/images/property_service_complain.png') no-repeat;"class="img_limit"></div>
+                       </div>
+                       <div class="text_container"><span>投&nbsp;诉</span></div>
+                     </a>
+               </div>
+               <div  class="out_container a_container">
+                    <a class="item_s7 item out" href="/express/">
+                       <div class="img_container"  name="express" text_name="快递领取">
+                         <div style="background: url('/static/images/property_service_express.png') no-repeat;"class="img_limit"></div>
+                       </div>
+                       <div class="text_container"><span>快递领取</span></div>
+                    </a>
+               </div>
+               <div  class="out_container a_container" >
+                 <a class="item_s7 item out" href="/community/notification/" >
+                   <div class="img_container" name="message" text_name="小区通知">
+                     <div style="background: url('/static/images/property_service_message.png') no-repeat;"class="img_limit"></div>
+                   </div>
+                   <div class="text_container"><span>小区通知</span></div>
+                  </a>
+               </div>
+
+           </div>
+
+       </div>
+       <div class="right_container">
+            <div class="left_container_header"><span><strong><font color="#808080">物业简介</font></strong></span></div>
+       </div>
+       <div style="float:left">
+            <div class="service_title">
+                <div style="padding-left: 33px;padding-top: 5px"><span><strong><font color="#808080">其他服务</font></strong></span></div>
+            </div>
+       </div>
+
+     <div style="float: left;margin-top: 56px;margin-left: -96px;padding-bottom: 20px" >
+        <div style="float: left">
+            <div class="bottom_container">
+            </div>
+        </div>
+        <div style="float: left;padding-left: 20px">
+            <div class="bottom_container">
+            </div>
+        </div>
+
+                 <div style="float: left;padding-left: 20px">
+            <div class="bottom_container">
+            </div>
+        </div>
+
+                 <div style="float: left;padding-left: 20px">
+            <div class="bottom_container">
+            </div>
+        </div>
+     </div>
+
+     </div>
+
+{% endblock %}
+{% block script %}
+    <script>
+          $(function(){
+            $('.img_container').mouseover(function(){
+                  var name =$(this).attr('name');
+                  var text_name =$(this).attr('text_name');
+                $(this).children(".img_limit").attr("style","background:url('/static/images/property_service_"+name+"_hover.png') no-repeat");
+                $(this).siblings(".text_container").html("<span><font color='#dd4250'>"+text_name+"</font></span>");
+            }).mouseout(function(){
+                 var name =$(this).attr('name');
+                 var text_name =$(this).attr('text_name');
+                $(this).children(".img_limit").attr("style","background:url('/static/images/property_service_"+name+".png') no-repeat");
+                $(this).siblings(".text_container").html("<span><font color='black'>"+text_name+"</font></span>");
+                    })
+        })
+    </script>
+
+{% endblock %}

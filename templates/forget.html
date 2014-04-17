@@ -1,0 +1,75 @@
+{% extends "baseheader.html" %}
+{% block css %}
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 90px;
+            padding-top: 10px;
+        }
+
+        .s_lrf_log .main_inner {
+            padding: 50px;
+        }
+        .lrf_optBox .titItem {
+            background: none repeat scroll 0 0 #F6F6F6;
+            border-bottom: 1px solid #C0C0C0;
+            padding: 10px 20px;
+        }
+        .lrf_fpwBox .optItem_item_btns .el_btn_gray_xl {
+            margin-left: 210px;
+            }
+    </style>
+{% endblock %}
+{% block container %}
+<div class="container" id="page">
+    <div class="main el_container">
+        	<div class="main_inner">
+                <!-- 注册框 start -->
+{#                <form class="form-horizontal" id="site-form"  method="">#}
+                    <div class="lrf_fpwBox lrf_optBox">
+                        <div class="titItem">
+                            <span class="title">找回密码</span>
+                        </div>
+                        <div class="optItem">
+                                <div class="optItem_item_blank_xl optItem_item_blank"></div>
+                                <div class="optItem_item">
+                                    <label class="el_lab">邮箱：</label>
+                                    <input class="el_inText" placeholder="注册邮箱" name="login_email" type="email" />{{show  }}
+                                    {% if show %}
+                                        <span><font color="red">**此邮箱没有注册</font></span>
+                                    {% endif %}
+                                    {% if email_error %}
+                                        <span><font color="red">**请输入正确的邮箱地址</font></span>
+                                    {% endif %}
+                                </div>
+                                <div class="optItem_item optItem_item_btns">
+                                    <button  class="el_btn_gray_xl el_btn" onclick="submit_data()"><span class="txt">下一步</span></button>
+                                </div>
+                         </div>
+                    </div>
+{#                </form>                <!-- 注册框 end -->#}
+            </div>
+    </div>
+</div>
+
+
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        function submit_data(){
+            var login_email = $('input[name=login_email]').val();
+            $.post('/forget/password/',
+                    {
+                        'login_email':login_email
+                    },
+                    function(data){
+                        if(data.success){
+                            alert("密码已发送至邮箱");
+                            window.location.href = "/login/";
+                        }
+
+                    }
+            )
+        }
+    </script>
+{% endblock %}

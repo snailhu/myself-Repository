@@ -1,0 +1,124 @@
+{% extends "baseheader.html" %}
+{% block title %}物业缴费{% endblock %}
+{% block css %}
+    <style>
+        body{
+            background-color: #ffffff;
+        }
+    .font_style{
+        color: #b46e28;
+    }
+    </style>
+{% endblock %}
+{% block container %}
+    <form method="post" action="/chinapay/payout/" name="property-form">
+        <div class="s_ifs_ix main el_container">
+            <div class="el_blank_h20"></div>
+            <!-- 右侧栏 start -->
+            <div class="el_w_974 fn_right">
+                <!-- vessel start -->
+                <div class="vessel vessel_s1 vessel_s3">
+                    <div class="vessel_titBox">
+                        <span class="tit">物业缴费</span>
+                    </div>
+
+                    <!--缴费步骤 start-->
+                    <div class="vessel_conBox_step2">
+                        <div class="vessel_conBox_step_head">
+                                            <span class="stepName stepName_s1">
+                                                <a style="color: #FFF"
+                                                   href="javascript:history.go(-1);">
+                                                    选择物业
+                                                </a>
+                                            </span>
+
+                                            <span class="stepName stepName_s2">
+                                                缴费清单
+                                            </span>
+
+                            <span class="stepName stepName_s3">在线支付</span>
+                            <span class="stepName stepName_s4">缴费成功</span>
+                        </div>
+                    </div>
+                    <!--缴费步骤 end-->
+
+
+                    <!--步骤3内容 start-->
+                    <div class="vessel_conBox_text" style="width: 661px;">
+        {#                <table class="payment_table">#}
+        {#                    <thead>#}
+        {#                    <tr>#}
+        {#                        <th>#}
+        {#                            <div class="pay_table_th">#}
+        {#                                <!--#}
+        {#                                  <p class="clearfix">#}
+        {#                                    <a href="javascript:void(0);" class="goback">&lt;&lt;&nbsp;返回</a>#}
+        {#                                    <span class="list_number">NO.2309848348238</span>#}
+        {#                                  </p>#}
+        {#                                   -->#}
+        {#                                <h4>半山御景物业费用清单</h4>#}
+        {##}
+        {#                                <p class="owner_info">#}
+        {#                                    <span class="owner_name" style="width: 160px;">业主：snail</span>#}
+        {#                                    <span class="owner_area" style="width:  260px;">物业：半山御景</span>#}
+        {#                                    <span class="due_time">日期：2014-02-17 14:47:03</span>#}
+        {#                                </p>#}
+        {#                            </div>#}
+        {#                        </th>#}
+        {#                    </tr>#}
+        {#                    </thead>#}
+        {#                    <tbody>#}
+        {#                    <tr>#}
+        {#                        <td>#}
+        {##}
+        {##}
+        {#                        </td>#}
+        {#                    </tr>#}
+        {##}
+        {#                    </tbody>#}
+        {##}
+        {#                </table>#}
+                        <div style="border: 1px solid #dddddd;height: 150px;padding: 5px 5px">
+                            <p class="font_style" >{{ profile.community.title }}小区{{ profile.floor }}栋{{ profile.gate_card }}号</p>
+
+                            <p class="font_style">
+                                {% if fee_standard %}
+                                {{ profile.house_acreage }}平方米 X {{ fee_standard.fee }}元/平X12个月
+                                {% else %}
+                                <span>暂没规定收费标准默认0元</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div style="border: 1px solid #dddddd;height: 30px;padding: 5px 5px">
+                            <span class="font_style">合计{{ total_money }}￥</span>
+                            <input type="hidden" name="order_num" value="{{ order_num}}"/>
+                            <input type="hidden" name="service_name" value="property_fee"/>
+                        </div>
+                        <div style="padding: 15px 10px">
+                            <span>业主：{{ user.username }}</span>
+                            <span>物业：{{ profile.community.title }}</span>
+                            <span>日期：</span><span id="timeArea">2013年3月28日</span>
+                        </div>
+                    </div>
+                    <!--步骤2内容 end-->
+                </div>
+                <!-- vessel end -->
+            </div>
+        <!-- 右侧栏 end -->
+            <div class="el_blank_h10 fn_clear"></div>
+            <p class="vessel_conBox_text_button2">
+                <input type="submit" class="el_btn_orange_xsl el_btn" id="propertyBtn" value="确认缴费"/>
+            </p>
+        </div>
+    </form>
+    <!-- 主要内容区域 end -->
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        function showTime(){
+            var now_time=new Date();   //   初始化日期对象
+                $( "#timeArea").html(now_time.toLocaleString());
+            }
+        window.setInterval("showTime()",0);
+    </script>
+{% endblock %}

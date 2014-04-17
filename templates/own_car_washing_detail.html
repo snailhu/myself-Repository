@@ -1,0 +1,77 @@
+{% extends "proprietor_base.html" %}
+
+{% block css %}
+ <style>
+.contain{width: 640px;margin-left: 240px;}
+.contain-title{background-color:#d3d3d3}
+.contain-title span{display: block;padding: 7px 0 7px  15px;}
+.contain-title a{color: #000000}
+tr{height: 30px}
+.center{padding: 25px 0 0 50px}
+.left-info{text-align: right}
+.contain-body{background-color: #f3f3f3;margin: 10px 0 0 20px;width: 600px;height: 250px}
+</style>
+{% endblock %}
+
+{% block container %}
+    <div class="contain">
+    <div class="contain-title">
+    <span><a href="/own_car_washing/"> 我的微水洗车</a>>>详情</span>
+    </div>
+    <div class="contain-detail">
+        <div class="contain-body">
+            <div class="center">
+            <table>
+                <tr>
+                    <td class="left-info">业主信息:</td><td>&nbsp;&nbsp;</td><td>{{ detail.author.profile }}</td>
+                </tr>
+
+                <tr>
+                    <td class="left-info">付费方式:</td><td>&nbsp;&nbsp;</td><td>
+                    {% ifequal detail.washing_type "1" %}单次:15元/次{% endifequal %}
+                    {% ifequal detail.washing_type "2" %}包月:120元/月,10次/月{% endifequal %}
+                    {% ifequal detail.washing_type "3" %}包季:300元/月,10次/月{% endifequal %}
+                    {% ifequal detail.washing_type "4" %}包月:1000元/次,10次/月{% endifequal %}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="left-info">洗车方案:</td><td>&nbsp;&nbsp;</td>
+                     {% ifequal detail.washing_type "1" %}
+                    <td>单次</td>
+                    {% endifequal %}
+                    {% ifequal detail.washing_case "1" %}
+                    <td>方案一</td>
+                    {% endifequal %}
+                     {% ifequal detail.washing_case "2" %}
+                    <td>方案二</td>
+                    {% endifequal %}
+                     {% ifequal detail.washing_case "3" %}
+                    <td>方案三</td>
+                    {% endifequal %}
+                </tr>
+                <tr>
+                    <td class="left-info">洗车起始时间:</td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>{{ detail.start_time|date:"Y-m-d" }}</td>
+                </tr>
+                <tr>
+                    <td class="left-info">车牌号:</td>
+                    <td>&nbsp;&nbsp;</td>
+                    <td>{{ detail.other_car_num }}
+                </tr>
+                <tr>
+                    <td class="left-info">使用情况:</td>
+                    <td>&nbsp;&nbsp;</td>
+                   {% ifequal detail.washing_status 0 %}
+                      <td>未使用</td>
+                   {% endifequal %}
+                   {% ifequal detail.washing_status 1 %}
+                      <td>已使用</td>
+                   {% endifequal %}
+                </tr>
+            </table>
+            </div>
+        </div>
+    </div>
+    </div>
+{% endblock %}

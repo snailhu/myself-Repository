@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <title>{% block title %}{% endblock %}</title>
+    <meta name="keywords" content="亨通,物业,管理,平台">
+    <meta name="description" content="亨通,物业,管理,平台">
+    <link href="/static/css/page.css" rel="stylesheet">
+    <link href="/static/css/common.css" rel="stylesheet">
+    <link href="/static/css/base.css" rel="stylesheet">
+    <link href="/static/css/form.css" rel="stylesheet">
+    <link href="/static/css/propertyFee.css" rel="stylesheet">
+    <link href="/static/css/commonNew.css" rel="stylesheet">
+    <link href="/static/css/baseNew.css" rel="stylesheet">
+    <link href="/static/css/indexNew.css" rel="stylesheet">
+    <link href="/static/css/bootstrap.css" rel="stylesheet">
+
+        <style>
+            body{
+                background-color: #f5f7fa;
+            }
+            .searchBox_tab_cur_new{
+                background: url(/static/images/search1.png) no-repeat 0;
+                color: #fff;
+            }
+            .dataTables_wrapper {
+                padding-left: 0px !important;
+            }
+
+            .dataTables_paginate {
+                float: right;
+                margin-top: -20px;
+            }
+
+            .dataTables_paginate li {
+                float: left
+            }
+
+            .dataTables_filter {
+                float: right;
+                margin-top: -25px;
+                margin-right: 18px
+            }
+
+            .span6 li {
+                padding-left: 1px;
+                padding-right: 1px;
+            }
+            a:hover{
+            text-decoration: none;
+        }
+          .title_new{
+            color:#ffffff
+        }
+
+        .mainNav_item {
+{#            border: 1px solid #FF0000;#}
+            display: inline-block;
+            height: 38px;
+            line-height: 38px;
+            margin-left:20px;
+            text-align: center;
+            vertical-align: top;
+            width: 106px;
+        }
+        .txt_two{
+            margin-top: -33px;
+            float: right
+        }
+        </style>
+    {% block css %}
+    {% endblock %}
+</head>
+<body class="s_info_lst">
+{% if show_warning %}
+    <div class="alert alert-warning alert-dismissable">
+      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+      <strong>提示!</strong> 暂时无法缴费！.
+    </div>
+{% endif %}
+<div id="show_detail" class="bs-example" style="display: none;margin-bottom: -15px">
+    <div id="show_info_detail" class="alert alert-warning fade in">
+        <button type="button" onclick="close_alert()" class="close">&times;</button>
+        <div id="show_info_detail_content">
+        </div>       .
+    </div>
+</div>
+<!-- 工具栏 start -->
+<div class="topBanner_box">
+    <div class="toolbar el_container">
+
+        <!-- left part start -->
+        <div class="fn_left">
+            <a class="favorite el_btn" title="添加收藏">
+
+                <i class="icon"></i>
+                <span class="txt">添加收藏</span>
+
+            </a>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        </div>
+        <div class="fn_left" style="margin-top:1px ">
+            <span><font color="black">工作时间：早8:00--12:00，下午14:00--18:00，晚上19:00--22:00</font></span>
+        </div>
+        <!-- left part end -->
+
+        <!-- right part start -->
+
+        <div class="fn_right">
+            {% if user %}
+                <a href="/own_information/" class="optLink el_btn">{{ user.username }}</a>
+                {% if user.is_staff %}
+                    <a href="/register/" class="optLink el_btn">添加用户</a>
+                    <a href="/community/" class="optLink el_btn">添加社区</a>
+                {% else %}
+                    <a href="/recharge/" class="optLink el_btn">充值</a>
+                {% endif %}
+                <a href="/logout/" class="optLink el_btn">登出</a>
+            {% else %}
+                <a href="/login/" class="optLink el_btn">[登录]</a>
+            {% endif %}
+
+            <span href="#" class="optMore el_btn">
+                    <span class="optMore_item">
+                        <span class="txt" title="帮助">帮助</span>
+                        <i class="icon"></i>
+                    </span>
+                    <span class="optMore_box">
+                        <div class="optMore_box_inner">
+                            <a href="#"
+                               class="optMore_link optMore_link_first"> 常见问题</a>
+                            <a href="#"
+                               class="optMore_link">售后服务</a>
+                            <a href="#"
+                               class="optMore_link optMore_link_last">客服中心</a>
+                        </div>
+                    </span>
+                </span>
+        </div>
+        <div class="fn_right" style="margin-right: 10px;margin-top: 2px">
+            {% if user %}
+                <span class=" glyphicon glyphicon-volume-up "></span>
+                <a id="show_detail_num" role="button" data-toggle="dropdown" href="#"><font
+                        color="#a52a2a">0</font></a>
+                <ul id="show_item_num" style="left: inherit" class="dropdown-menu" role="menu"
+                    aria-labelledby="show_detail">
+                    <li id="show_housekeeping_num" onclick="info_detail(this)" name="housekeeping"><a href="#">家政：0</a>
+                    </li>
+                    <li id="show_repair_num" onclick="info_detail(this)" name="repair"><a href="#">报修：0</a></li>
+                    <li id="show_express_num" onclick="info_detail(this)" name="express"><a href="#">快递：0</a></li>
+                    <li id="show_complain_num" onclick="info_detail(this)" name="complain"><a href="#">投诉：0</a></li>
+                </ul>
+            {% endif %}
+        </div>
+        <!-- right part end -->
+
+        <div class="fn_clear"></div>
+    </div>
+</div>
+<!-- 工具栏 end -->
+
+<!-- 头部广告栏 start -->
+<div class="topBanner el_container">
+    <a href="/index/" class="imgLink">
+{#        <img src="/images/pic_demo_banner.png/" class="demoPic">#}
+        <div  class="demoPic">
+        </div>
+    </a>
+</div>
+<!-- 头部广告栏 end -->
+
+<!-- 搜索栏 start -->
+<div class="searchBar el_container">
+
+    <!-- logo start -->
+    <div class="logoBox fn_left">
+        <a href="/index/" class="logoLink" title="彩生活">
+            <div   class="logoImg" >
+            </div>
+        </a>
+    </div>
+    <!-- logo end -->
+
+    <!-- search start -->
+    <form id="search-form" action="#" method="GET">
+        <div class="searchBox fn_left">
+            <div class="searchBox_tabs">
+                <a class="searchBox_tab searchBox_tab_cur_new"
+                   val="1">商家</a>
+                <a class="searchBox_tab "
+                   val="2">商品</a>
+                <a class="searchBox_tab "
+                   val="3">信息</a>
+                <input class="searchBox_tab_val" name='searchType' type="hidden"
+                       value="1">
+            </div>
+            <div class="searchBox_container">
+                <input type="text" name='searchText' class="keyword_by_el_inText el_inText"
+                       value="" defaultTxt="搜索">
+
+                <button class="search_by_el_btn el_btn">
+                    <i class="icon"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    <!-- search end -->
+
+    <!-- telephone start -->
+    <div class="phoneBox fn_right"style="margin-top: -6px">
+                <span class="phoneBox_item">
+                    <i class="icon"></i>
+{#                    <span class="txt"style="padding-top: 10px">客服热线:8888 888 888</span>#}
+                    <div class="txt txt_two"><span>客服热线:8888 888 888</span></div>
+                </span>
+    </div>
+    <!-- telephone end -->
+
+    <div class="fn_clear"></div>
+</div>
+<!-- 搜索栏 end -->
+
+<!-- 主导航栏 start -->
+<div class="mainNav">
+    <div class="mainNav_box el_container">
+{#        <div class="btn-group" style="margin-left:10px;border: 1px solid red;width:50px;height: 50px">#}
+{#                <span style="border: 1px solid #000000;width: 500px;height: 30px">#}
+{#                    {{ profile.community.title }}#}
+{#                </span>#}
+{#            111111111111111111111#}
+{#        </div>#}
+{#     {% endif %}#}
+        {% if user.is_active %}
+            <a href="/index/" class="mainNav_item" title="小区首页">
+            <span class="txt">{{ profile.community.title }}</span>
+        </a>
+         {% endif %}
+        <a href="/index/" class="mainNav_item" title="小区首页">
+            <span class="txt">小区首页</span>
+        </a>
+
+        <a href="/property/" class="mainNav_item" title="物业服务">
+            <span class="txt">物业服务</span>
+        </a>
+
+        <a href="/local_life/" class="mainNav_item" title="本地生活">
+
+            <span class="txt">本地生活</span>
+        </a>
+
+         <a href="/supermarket/" class="mainNav_item" title="天天超市">
+            <span class="txt">天天超市</span>
+        </a>
+
+        <a href="#" class="mainNav_item" title="便民服务">
+            <span class="txt">便民服务</span>
+        </a>
+
+        <a href="#" class="mainNav_item" title="应用">
+            <span class="txt">应用</span>
+        </a>
+        {% if user.if_staff %}
+            <a href="#" class="mainNav_item" title="管理">
+                <span class="txt">管理</span>
+            </a>
+        {% endif %}
+
+
+    </div>
+</div>
+<!-- 主导航栏 end -->
+<div class="container" id="page">
+    {% block container %}
+    {% endblock %}
+</div>
+<!-- 服务快链区域 start -->
+<div class="serverBar">
+    <div class="serverBar_box el_container" >
+<span class="borderBox"style="margin-left: -7px;width:780px">
+    <span class="item">
+        <strong class="title title_new">购物指南</strong>
+        <span class="box">
+        <a href="#" class="link" title="购物流程">购物流程</a><em class="el_blank"></em>
+        <a href="#" class="link" title="订单状态说明">订单状态说明</a><em class="el_blank"></em>
+        <a href="#" class="link" title="优惠券说明">优惠券说明</a><em class="el_blank"></em>
+        </span>
+    </span>
+    <span class="item"style="margin-left: 73px">
+        <strong class="title title_new">支付帮助</strong>
+        <span class="box">
+        <a href="#" title="在线支付"><span style="color: #ffffff">在线支付</span></a><em class="el_blank"></em>
+        </span>
+    </span>
+    <span class="item" style="margin-left: 65px">
+        <strong class="title title_new">物流配送</strong>
+        <span class="box">
+        <a href="#" class="link" title="商家配送">商家配送</a><em class="el_blank"></em>
+        </span>
+    </span>
+    <span class="item"style="margin-left: 73px">
+        <strong class="title title_new">服务条款</strong>
+        <span class="box">
+            <a href="#" class="link" title="退换货说明">退换货说明</a><em class="el_blank"></em>
+            <a href="#" class="link" title="联系客服">联系客服</a><em class="el_blank"></em>
+        </span>
+    </span>
+</span>
+<span class="exBox">
+    <span class="item">
+        <strong class="title title_new">联系我们</strong>
+        <span class="box">
+            <a href="mailto:bcc0421@gmail.com" class="link" title="联系我们">bcc0421@gmail.com</a>
+            <em class="el_blank"></em>
+            <a class="txt">客服:8888-888-888</a>
+            <em class="el_blank"></em>
+        </span>
+    </span>
+</span>
+    </div>
+</div>
+
+<div class="companyBar el_container">
+    <p class="quicklinkBox">
+        <a href="#" class="link"
+           title="芯联电">芯联电</a>
+        |
+        <a href="#" class="link"
+           title="公司介绍">公司介绍</a>
+        |
+        <a href="#" class="link"
+           title="服务协议">服务协议</a>
+        |
+        <a href="#" class="link"
+           title="隐私权保护">隐私权保护</a>
+        |
+        <a href="#" class="link"
+           title="广告服务">广告服务</a>
+        |
+        <a href="#" class="link"
+           title="客服中心">客服中心</a>
+        |
+        <a href="#" class="link"
+           title="加入我们">加入我们</a>
+        |
+        <a href="#" class="link"
+           title="帮助">帮助</a>
+    </p>
+
+    <p class="pull-right">
+
+    <div id="backtop"
+         style="display:none;position:fixed;width:50px;height:50px;background-image: url(/static/img/onbacktop.png);">
+    </div>
+    </p>
+    <p class="copyrightBox">
+        CopyRight ©2013 SFI SuZhou All Rights Reserved
+    </p>
+    <p class="copyrightBox"style="margin-top: -36px">
+      <a href="http://www.miitbeian.gov.cn" target="_blank" rel="nofollow" hidefocus="false">苏ICP备14005523号-1</a>
+    </p>
+
+</div>
+<!-- 公司链接区域 end -->
+<script src="/static/js/jquery.min.js"></script>
+<script src="/static/js/colourlife.common.js"></script>
+<script src="/static/js/bootstrap.js"></script>
+<script src="/static/js/colourlife.form.js"></script>
+<script src="/static/js/jquery.dataTables.min.js"></script>
+<script src="/static/js/DT_bootstrap.js"></script>
+
+<script type="text/javascript">
+
+    $(function(){
+        $('.searchBox_tabs a').click(function(){
+            $(this).addClass('searchBox_tab_cur_new').siblings().removeClass('searchBox_tab_cur_new');
+        })
+    })
+    function get_new_num() {
+        $.post('/get/new/dynamic_data/',
+                function (data) {
+                    $('#show_detail_num').html("<font color='#a52a2a'>" + data.sum_num + "</font>");
+                    $('#show_housekeeping_num').html("<a href='#'>家政：" + data.housekeeping_num + "</a>");
+                    $('#show_repair_num').html("<a href='#'>报修：" + data.repair_num + "</a>");
+                    $('#show_express_num').html("<a href='#'>快递：" + data.express_num + "</a>");
+                    $('#show_complain_num').html("<a href='#'>投诉：" + data.complain_num + "</a>");
+                })
+    }
+{#    window.setInterval("get_new_num()", 3000);#}
+    function goTop() {
+        $(window).scroll(function (e) {
+            var clientHeight = $(window).height();
+            var clientWidth = $(window).width();
+            var realtop = clientHeight - 50;
+            var realleft = clientWidth - 60;
+            //若滚动条离顶部大于100元素
+            if ($(window).scrollTop() > 100) {
+                $("#backtop").css(
+                        {
+                            "top": realtop + "px",
+                            "left": realleft + "px"
+                        });
+                $("#backtop").fadeIn(1000);//以1秒的间隔渐显id=backtop的元素
+            }
+            else
+                $("#backtop").fadeOut(1000);//以1秒的间隔渐隐id=backtop的元素
+        });
+    }
+    //点击回到顶部的元素
+    $("#backtop").click(function (e) {
+        //以0.5秒的间隔返回顶部
+        $('body,html').animate({scrollTop: 0}, 500);
+    });
+    $("#backtop").mouseover(function (e) {
+        $(this).css("background", "url(../static/img/outbacktop.png) no-repeat 0px 0px");
+    });
+    $("#backtop").mouseout(function (e) {
+        $(this).css("background", "url(../static/img/onbacktop.png) no-repeat 0px 0px");
+    });
+    goTop();//实现回到顶部元素的渐显与渐隐
+    function get_data(item_name) {
+        function TableInit(DataSet) {
+            $('#message_remind').dataTable({
+                "aaData": DataSet,
+                "aoColumns": [
+                    { "sTitle": "提醒内容", "sClass": "center" }
+                ],
+                "iDisplayLength": 5,
+                "aLengthMenu": [
+                    [5, 10, 15, -1],
+                    [5, 10, 15, 20]
+                ],
+                //"aLengthMenu": [[5, 10, 20, -1], [5, 10, 20, "All"]],
+                "bSort": false,
+                "oLanguage": {
+                    "sLengthMenu": "显示 _MENU_每页显示记录",
+                    "sZeroRecords": "对不起没有你要找的记录",
+                    "sInfo": "显示 _START_ 到 _END_ 总共 _TOTAL_ 条记录",
+                    "sInfoEmpty": "显示 0 到 0 总共 0 记录",
+                    "sInfoFiltered": "(从 _MAX_条记录中查找)",
+                    "sSearch": "搜索:"
+                }
+            });
+        }
+
+        $.post('/get/detail_data/',
+                {'item_name': item_name},
+                function (data) {
+                    // if (data.success) {
+                    var DataSet = new Array();
+                    $('#show_info_detail_content').html('<table cellpadding="0" cellspacing="0" border="1" class=" display table table-striped table-bordered dataTable" id="message_remind"></table>');
+                    if (item_name == 'housekeeping') {
+                        if (data.identity == 'inhabitant') {
+                            for (var i = 0; i < data.house_keep_list.length; i++) {
+                                DataSet[i] = new Array("您于&nbsp;&nbsp;" + data.house_keep_list[i].time + "&nbsp;&nbsp;申请的&nbsp;&nbsp;" + data.house_keep_list[i].item + "&nbsp;&nbsp;已派&nbsp;&nbsp;" + data.house_keep_list[i].handler + "&nbsp;&nbsp;去处理");
+                            }
+                        }
+                        if (data.identity == 'admin') {
+                            for (var i = 0; i < data.house_keep_list.length; i++) {
+                                DataSet[i] = new Array("" + data.house_keep_list[i].housekeeping_author + "&nbsp;&nbsp;在&nbsp;&nbsp;" + data.house_keep_list[i].time + "&nbsp;&nbsp;申请&nbsp;&nbsp;" + data.house_keep_list[i].item + "&nbsp;&nbsp服务&nbsp;&nbsp;");
+                            }
+                        }
+                        if (data.identity == 'worker') {
+                            for (var i = 0; i < data.house_keep_list.length; i++) {
+                                DataSet[i] = new Array("管理员将&nbsp;&nbsp;" + data.house_keep_list[i].housekeeping_author + "&nbsp;&nbsp;申请的&nbsp;&nbsp;" + data.house_keep_list[i].item + "&nbsp;&nbsp;指派于你去处理");
+                            }
+                        }
+                        TableInit(DataSet);
+                    }
+                    if (item_name == 'express') {
+                        if (data.identity == 'inhabitant') {
+                            for (var i = 0; i < data.express_list.length; i++) {
+                                DataSet[i] = new Array("您有新的快件于" + data.express_list[i].arrive_time + "到达请注意查收");
+                            }
+                        }
+                        else {
+                            DataSet[i] = new Array("详情请看邮政业务！");
+                        }
+                        TableInit(DataSet);
+
+                    }
+                    if (item_name == 'repair') {
+                        if (data.identity == 'inhabitant') {
+                            for (var i = 0; i < data.repair_list.length; i++) {
+                                DataSet[i] = new Array("您于" + data.repair_list[i].time + "的" + data.repair_list[i].type + "已派" + data.repair_list[i].handler + "去处理");
+                            }
+                        }
+                        if (data.identity == 'admin') {
+                            for (var i = 0; i < data.repair_list.length; i++) {
+                                DataSet[i] = new Array("" + data.repair_list[i].repair_author + "&nbsp;&nbsp;在&nbsp;&nbsp;" + data.repair_list[i].time + "&nbsp;&nbsp;报修&nbsp;&nbsp;" + data.repair_list[i].type + "&nbsp;&nbsp服务&nbsp;&nbsp;");
+                            }
+                        }
+                        if (data.identity == 'worker') {
+                            for (var i = 0; i < data.repair_list.length; i++) {
+                                DataSet[i] = new Array("管理员将&nbsp;&nbsp;" + data.repair_list[i].repair_author + "&nbsp;&nbsp;报修的&nbsp;&nbsp;" + data.repair_list[i].type + "&nbsp;&nbsp;指派于你去处理");
+                            }
+                        }
+                        TableInit(DataSet);
+                    }
+                    if (item_name == 'complain') {
+                        if (data.identity == 'inhabitant') {
+                            for (var i = 0; i < data.complain_list.length; i++) {
+                                DataSet[i] = new Array("您于" + data.complain_list[i].time + "投诉的" + data.complain_list[i].type + "已派" + data.complain_list[i].handler + "去处理");
+                            }
+                        }
+                        if (data.identity == 'admin') {
+                            for (var i = 0; i < data.complain_list.length; i++) {
+                                DataSet[i] = new Array("" + data.complain_list[i].complain_author + "&nbsp;&nbsp;在&nbsp;&nbsp;" + data.complain_list[i].time + "&nbsp;&nbsp;投诉&nbsp;&nbsp;" + data.complain_list[i].type + "");
+                            }
+                        }
+                        if (data.identity == 'worker') {
+                            for (var i = 0; i < data.complain_list.length; i++) {
+                                DataSet[i] = new Array("管理员将&nbsp;&nbsp;" + data.complain_list[i].complain_author + "&nbsp;&nbsp;投诉的&nbsp;&nbsp;" + data.complain_list[i].type + "&nbsp;&nbsp;指派于你去处理");
+                            }
+                        }
+                        TableInit(DataSet);
+                    }
+                    // }
+                    //else {
+                    //   $("#show_info_detail_content").html('');
+                    //   $("#show_info_detail_content").append("<p>当前没有最新消息！</p>");
+                    //}
+                })
+    }
+    function info_detail(obj) {
+        var item_name = $(obj).attr('name');
+        get_data(item_name);
+        $("#show_detail").slideDown();
+    }
+    function close_alert() {
+        $("#show_detail").slideUp();
+        $("#show_info_detail_content").html('');
+    }
+
+</script>
+{% block script %}
+{% endblock %}
+</body>
+
+</html>

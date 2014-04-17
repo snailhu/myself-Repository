@@ -1,0 +1,373 @@
+{% extends "base_old.html" %}
+{% block title %}首页{% endblock %}
+{% block css %}
+    <link href="/static/css/docs.css" rel="stylesheet">
+    <link href="/static/css/lightbox.css" rel="stylesheet">
+    <link href="/static/css/jquery.fileupload-ui.css" rel="stylesheet">
+    <style>
+        #masonry {
+            padding: 0;
+            min-height: 450px;
+            margin: 0 auto;
+        }
+
+        #masonry .thumbnail {
+            width: 330px;
+            margin: 20px;
+            padding: 0;
+            border-width: 1px;
+            -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
+        }
+
+        #masonry .thumbnail .imgs {
+            padding: 10px;
+        }
+
+        #masonry .thumbnail .imgs img {
+            margin-bottom: 5px;
+            height: auto;
+            max-width: 100%;
+            vertical-align: middle;
+            border: 0;
+        }
+
+        #masonry .thumbnail .caption {
+            background-color: #fff;
+            padding-top: 0;
+            font-size: 13px;
+        }
+
+        #masonry .thumbnail .caption .title {
+            font-size: 13px;
+            font-weight: bold;
+            margin: 5px 0;
+            text-align: left;
+        }
+
+        #masonry .thumbnail .caption .author {
+            font-size: 11px;
+            text-align: right;
+        }
+
+        .lightbox .lb-image {
+            max-width: none;
+        }
+
+    </style>
+{% endblock %}
+{% block body %}
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                {% if username %}
+                    <a class="navbar-brand" href="/dashboard/">亨通物业管理平台</a>
+                {% else %}
+                    <a class="navbar-brand" href="/index/">亨通物业管理平台</a>
+                {% endif %}
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="../shine">晒一晒</a>
+                    </li>
+                    <li>
+                        <a href="../css">晒二晒</a>
+                    </li>
+                    <li>
+                        <a href="../components">晒三晒</a>
+                    </li>
+                    <li>
+                        <a href="../javascript">晒四晒</a>
+                    </li>
+                    <li>
+                        <a href="../customize">晒五晒</a>
+                    </li>
+                </ul>
+                {% if username %}
+                    <form class="navbar-form navbar-right">
+                        <!-- Button trigger modal -->
+                        <button class="btn btn-success" data-toggle="modal" data-target="#myModal">
+                            添加图片
+                        </button>
+                        <a class="btn btn-info" href="/profile/">{{ username }}</a>
+                        <a class="btn btn-primary" href="/logout/">登出</a>
+                    </form>
+                {% else %}
+                    <form class="navbar-form navbar-right" action="/login/" method="post">
+                        <div class="form-group">
+                            <input type="text" placeholder="用户名" class="form-control" name="username" required
+                                   autofocus>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" placeholder="密码" class="form-control" name="password" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">登陆</button>
+                        <a class="btn btn-primary" href="/register/">注册</a>
+                    </form>
+                {% endif %}
+
+            </div>
+            <!--/.navbar-collapse -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div style="overflow: hidden" class="modal fade" id="myModal" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">添加图片</h4>
+                </div>
+                <div class="modal-body">
+                    <input id="id_img" type="file" name="upload_img">
+                    <textarea id="id_comments" name="id_comments" onKeyDown="textCounter(id_comments,remLen,250);"
+                              onKeyUp="textCounter(id_comments,remLen,250);"
+                              style="height: 100px;width: 527px;margin: 0px;margin-top: 10px;"></textarea>
+
+                    <div style="padding-bottom: 20px;" id="id_file_name"></div>
+                    <p>
+                        <font color="red" size="2px">还可输入:</font>
+                        <input name="remLen" id="remLen" type="text" value="250" size="5" readonly="readonly"
+                               style="width:33px;height:20px">
+                        <font color="red" size="2px">个字符</font>
+                    </p>
+
+                    <div id="progress_pic" class="progress progress-striped active">
+                        <div class="bar"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button id="id_save_img" name="upload_img" type="button" class="btn btn-primary">确定
+                    </button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+    <div class="container">
+        <div id="id_sort" style="margin-top: 30px;">
+            <a class="btn btn-info" href="../shine/">按时间排序</a>
+            <a class="btn btn-info" href="../shine?order=like">按喜欢排序</a>
+            <a class="btn btn-info" href="../shine?order=keep">按收藏排序</a>
+        </div>
+
+        <div id="masonry" class="container-fluid">
+        </div>
+        <div id="masonry_ghost" class="hide">
+            {% for picture in pictures %}
+                <div class="thumbnail" id="remove_{{ picture.id }}">
+                    <div class="imgs">
+                        <input type="hidden" value="{{ picture.src }}">
+                    </div>
+                    <div class="caption">
+                        <div class="title">{{ picture.title }}</div>
+                        <div class="content">
+                            <button onclick="like_img(this)" name="{{ picture.id }}"><span
+                                    class="glyphicon glyphicon-heart-empty"></span>+<span
+                                    id="like_{{ picture.id }}">{{ picture.like }}</span></button>
+                            <button onclick="store_img(this)" name="{{ picture.id }}">收藏+<span
+                                    id="store_{{ picture.id }}">{{ picture.keep }}</span></button>
+                            <button onclick="delete_img(this)" {% ifnotequal user picture.author %}
+                                    style="display:none " {% endifnotequal %} name="{{ picture.id }}">删除
+                            </button>
+                        </div>
+                        <div class="author">store
+                            by {{ picture.author.username }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+{% endblock %}
+
+{% block script %}
+    <script src="/static/js/masonry.pkgd.min.js"></script>
+    <script src="/static/js/imagesloaded.pkgd.min.js"></script>
+    <script src="/static/js/lightbox-2.6.min.js"></script>
+    <script src="/static/js/jquery.ui.widget.js"></script>
+    <script src="/static/js/jquery.iframe-transport.js"></script>
+    <script src="/static/js/jquery.fileupload.js"></script>
+    <script src="/static/js/bootbox.js"></script>
+
+    <script>
+        function textCounter(field, countfield, maxlimit) {
+            // 函数，3个参数，表单名字，表单域元素名，限制字符；
+            if (field.value.length > maxlimit)
+            //如果元素区字符数大于最大字符数，按照最大字符数截断；
+                field.value = field.value.substring(0, maxlimit);
+            else
+            //在记数区文本框内显示剩余的字符数；
+                countfield.value = maxlimit - field.value.length;
+        }
+        function delete_img(obj) {
+            var keyid = obj.name;
+            bootbox.confirm("Are you sure?", function (result) {
+                console.log(result);
+                if (result) {
+                    $.post("/delete_picture/" + keyid + "/",
+                            function (data, textStatus) {
+                                window.location.href = '/shine/'
+                            });
+                }
+            });
+        }
+        function like_img(obj) {
+            var keyid = obj.name;
+            $.post("/like/" + keyid + "/",
+                    function (data, textStatus) {
+                        // $$("#showdelete_" + $$keyid + "").remove();
+                        $("#like_" + keyid + "").html(data.like);
+                    });
+        }
+        function store_img(obj) {
+            var keyid = obj.name;
+            $.post("/keep/" + keyid + "/",
+                    function (data, textStatus) {
+                        // $$("#showdelete_" + $$keyid + "").remove();
+                        $("#store_" + keyid + "").html(data.keep);
+                    });
+        }
+        $(function () {
+            var ghostNode = $('#masonry_ghost').find('.thumbnail'), i, ghostIndexArray = [];
+            var ghostCount = ghostNode.length;
+            for (i = 0; i < ghostCount; i++) {
+                ghostIndexArray[i] = i;
+            }
+
+            var currentIndex = 0;
+            var masNode = $('#masonry');
+            var imagesLoading = false;
+
+            function getNewItems() {
+                var newItemContainer = $('<div/>');
+                for (var i = 0; i < 6; i++) {
+                    if (currentIndex < ghostCount) {
+                        newItemContainer.append(ghostNode.get(ghostIndexArray[currentIndex]));
+                        currentIndex++;
+                    }
+                }
+                return newItemContainer.find('.thumbnail');
+            }
+
+            function processNewItems(items) {
+                items.each(function () {
+                    var $this = $(this);
+                    var imgsNode = $this.find('.imgs');
+                    var title = $this.find('.title').text();
+                    var author = $this.find('.author').text();
+                    title += '&nbsp;&nbsp;(' + author + ')';
+                    var lightboxName = 'lightbox_'; // + imgNames[0];
+                    var imgNames = imgsNode.find('input[type=hidden]').val().split(',');
+                    $.each(imgNames, function (index, item) {
+                        imgsNode.append('<a href="../media/' + item + '" data-lightbox="' + lightboxName + '" title="' + title + '"><img src="../media/' + item + '" /></a>');
+                    });
+                });
+            }
+
+            function initMasonry() {
+                var items = getNewItems().css('opacity', 0);
+                processNewItems(items);
+                masNode.append(items);
+
+                imagesLoading = true;
+                items.imagesLoaded(function () {
+                    imagesLoading = false;
+                    items.css('opacity', 1);
+                    masNode.masonry({
+                        itemSelector: '.thumbnail',
+                        isFitWidth: true
+                    });
+                });
+            }
+
+
+            function appendToMasonry() {
+                var items = getNewItems().css('opacity', 0);
+                processNewItems(items);
+                masNode.append(items);
+                imagesLoading = true;
+                items.imagesLoaded(function () {
+                    imagesLoading = false;
+                    items.css('opacity', 1);
+                    masNode.masonry('appended', items);
+                });
+            }
+
+            initMasonry();
+
+            $(window).scroll(function () {
+                if ($(document).height() - $(window).height() - $(document).scrollTop() < 10) {
+                    if (!imagesLoading) {
+                        appendToMasonry();
+                    }
+                }
+            });
+
+            function randomColor() {
+                var rand = Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                for (; rand.length < 6;) {
+                    rand = '0' + rand;
+                }
+                return '#' + rand;
+            }
+
+
+            //文件上传地址
+            var url = "/upload_image/";
+            //初始化，主要是设置上传参数，以及事件处理方法(回调函数)
+            $('#id_img').fileupload({
+                autoUpload: false,//是否自动上传
+                url: url,//上传地址
+                dataType: 'json',
+                maxNumberOfFiles: 1,
+                done: function (e, data) {//设置文件上传完毕事件的回调函数
+                    window.location.href = '/shine/'
+                },
+                fail: function (e, data) {
+                    alert("网络异常，请检查！");
+                },
+                add: function (e, data) {
+                    $("#id_file_name").html(data.files[0].name);
+                    $("#id_save_img").unbind("click");
+                    $("#id_save_img").click(function () {
+                        var intro = $("#id_comments");
+                        var textval = $("#id_comments").val();
+                        if (textval.length != 0) {
+                            data.formData = {introduction: intro.val()};
+                            data.submit();//上传文件
+                        }
+                        else {
+                            alert("请描述图片");
+                            return false;
+                        }
+                    });
+                },
+                progressall: function (e, data) {//设置上传进度事件的回调函数
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $('#progress_pic .bar').css(
+                            'width',
+                            progress + '%'
+                    );
+                }
+            });
+
+        });
+    </script>
+{% endblock %}

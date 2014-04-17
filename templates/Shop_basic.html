@@ -1,0 +1,135 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+     <script src="/static/js/jquery.min.js" type="text/javascript"></script>
+     <script src="/static/js/shop.js" type="text/javascript"></script>
+     <link rel="stylesheet" type="text/css" href="/static/css/shop_new.css">
+     {% block css %}{% endblock %}
+</head>
+<body>
+
+
+<!--navigation start-->
+<div class="scroll-bar">
+    <div class="scroll">
+    <ul id="navigation">
+        <li>
+          <a class="title-link {% block basic-service%}{% endblock %}" href="/shop/basic_service/">
+          <div class="image">
+          <img  src="" width="137" height="56">
+          </div>
+          <div class="title">
+             基础服务
+          </div>
+          </a>
+
+        </li>
+
+        <li>
+          <a class="title-link {% block tape %}{% endblock %}" href="/shop/tape/">
+          <div class="image">
+          <img src="" width="137" height="56">
+          </div>
+          <div class="title">
+             宽带服务
+          </div>
+          </a>
+        </li>
+
+        <li>
+          <a class="title-link {% block telephone %}{% endblock %}" href="/shop/telephone/">
+          <div class="image">
+          <img  src="" width="137" height="56">
+          </div>
+          <div class="title">
+             固话服务
+          </div>
+          </a>
+        </li>
+
+        <li>
+          <a class="title-link {% block phone %}{% endblock %}" href="/shop/phone/">
+          <div class="image">
+          <img src="" width="137" height="56">
+          </div>
+          <div class="title">
+            IP phone服务
+          </div>
+          </a>
+        </li>
+
+        <li>
+          <a class="title-link {% block group %}{% endblock %}" href="/shop/group/">
+          <div class="image">
+          <img src="" width="137" height="56">
+          </div>
+          <div class="title">
+             集团分机服务
+          </div>
+          </a>
+        </li>
+        <li>
+          <a class="title-link {% block cloud %}{% endblock %}" href="/shop/cloud/">
+          <div class="image">
+          <img src="" width="137" height="56">
+          </div>
+          <div class="title">
+             云计算服务
+          </div>
+          </a>
+        </li>
+
+          <li>
+          <a class="title-link " href="/shop/phone/">
+          <div class="image">
+          <img src="" width="137" height="56">
+          </div>
+          <div class="title">
+          </div>
+          </a>
+        </li>
+           <li>
+          <a class="title-link " href="/shop/phone/">
+          <div class="image">
+          <img src="" width="137" height="56">
+          </div>
+          <div class="title">
+          </div>
+          </a>
+        </li>
+        <li>
+          <a class="title-link " href="/shop/phone/">
+          <div class="image">
+          <img src="" width="137" height="56">
+          </div>
+          <div class="title">
+          </div>
+          </a>
+        </li>
+        <li>
+          <a class="title-link " href="/shop/phone/">
+          <div class="image">
+          <img src="" width="137" height="56">
+          </div>
+          <div class="title">
+          </div>
+          </a>
+        </li>
+        </ul>
+        <a class="navigation-arrow left in"></a>
+        <a class="navigation-arrow right"></a>
+
+    </div>
+</div>
+<!--navigation end-->
+
+{% block contain %}
+
+{% endblock %}
+
+
+</body>
+</html>
