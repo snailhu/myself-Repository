@@ -10,7 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db import transaction
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from SmartDataApp.controller.admin import convert_session_id_to_user, return_error_response, return_404_response
-from SmartDataApp.controller.complain import UTC, push_message, ThreadClass, PushCheckClass, PleasedClass
+from SmartDataApp.controller.complain import UTC, push_message, ThreadClass, PushCheckClass, PleasedClass, JudgeClass
 from SmartDataApp.views import index
 from SmartDataApp.models import ProfileDetail, Community, Express
 from django.contrib.auth.models import User
@@ -266,7 +266,7 @@ def admin_dispatch_express(request):
         admin_profile = ProfileDetail.objects.get(profile=admin)
         title = '消息通知'
         description = '你有新的快递要派送请查看！'
-        theme = 'express'
+        theme = '快递'
         role = 'worker'
         express_array = request.POST.get("selected_express_string", None)
         deal_person_id = request.POST.get("deal_person_id", None)
@@ -285,7 +285,7 @@ def admin_dispatch_express(request):
                     if user_obj:
                         express.handler = user_obj
                     express.save()
-                    push_class = PushCheckClass(description, handler_detail, title, theme, role,express,admin_profile)
+                    push_class = PushCheckClass(description, handler_detail, title, theme, role,express,admin_profile,express.id)
                     push_class.start()
                 #push_message(description, handler_detail, title)
                 response_data = {'success': True, 'info': '授权成功并推送消息至处理人！'}
@@ -320,8 +320,8 @@ def express_response(request):
                 profile = ProfileDetail.objects.get(profile=express.handler)
                 push_class = ThreadClass(description,  profile, title, theme, role)
                 push_class.start()
-                check_pleased = PleasedClass(express)
-                check_pleased.start()
+                judge_pleased = JudgeClass(express.theme_one,profile)
+                judge_pleased.start()
             response_data = {'success': True, 'info': '反馈成功！', }
             return HttpResponse(simplejson.dumps(response_data), content_type="application/json")
 

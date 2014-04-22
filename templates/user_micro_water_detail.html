@@ -1,7 +1,7 @@
 {% extends "baseheader.html" %}
 
 {% block css %}
-<style>
+<style xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
 .contain{border: 1px solid#e3e3e3;width: 800px;margin: 30px auto 50px}
 .contain-title span{display: block;padding: 8px 0 8px 15px}
 .contain-body{border-top: 1px solid #e3e3e3;border-bottom: 1px solid #e3e3e3;background-color: #fff;padding: 40px 0 20px 30px;height: 240px}
@@ -19,14 +19,16 @@
 <div class="contain-title">
 <span>微水洗车费</span>
 </div>
-
+<form method="post" target="_blank" action="/chinapay/payout/">
+{% csrf_token %}
 <div class="contain-body">
 <div class="contain-detail">
+<input type="hidden" name="service_name" value=" 微水洗车">
 <span class=" detail-name">选择付费方式:</span><span class="detail-contain" id="washing_type" value={{ washing_type }}>
-    {% ifequal washing_type "1" %}单次:15元/次{% endifequal %}
-    {% ifequal washing_type "2" %}包月:120元/月,10次/月{% endifequal %}
-    {% ifequal washing_type "3" %}包季:300元/月,10次/月{% endifequal %}
-    {% ifequal washing_type "4" %}包月:1000元/次,10次/月{% endifequal %}
+    {% ifequal washing_type "1" %}单次:{{ single_fee }}元/次{% endifequal %}
+    {% ifequal washing_type "2" %}包月:{{ month_fee }}元/月,10次/月{% endifequal %}
+    {% ifequal washing_type "3" %}包季:{{ season_fee }}元/月,10次/月{% endifequal %}
+    {% ifequal washing_type "4" %}包月:{{ year_fee }}元/次,10次/月{% endifequal %}
 </span>
 </div>
 
@@ -54,22 +56,32 @@
  </div>
 
  <div class="contain-detail">
-<span class=" detail-name">应付金额:</span><span  class="detail-contain" id="cash" name="cash" >
-      {% ifequal washing_type "1" %}15.00元{% endifequal %}
-    {% ifequal washing_type "2" %}120.00元{% endifequal %}
-    {% ifequal washing_type "3" %}300.00元{% endifequal %}
-    {% ifequal washing_type "4" %}1000.00元{% endifequal %}
+<span class=" detail-name">应付金额:</span><span  class="detail-contain" id="total_money"  >
+      {% ifequal washing_type "1" %}{{ single_fee }}元{% endifequal %}
+    {% ifequal washing_type "2" %}{{ month_fee }}元{% endifequal %}
+    {% ifequal washing_type "3" %}{{ season_fee }}元{% endifequal %}
+    {% ifequal washing_type "4" %}{{ year_fee }}元{% endifequal %}
 </span>
  </div>
 
 </div>
+<input type="hidden" name="order_number" value="{{ order_number }}">
 <div class="contain-footer">
-<button id="case-submit">确认支付</button>
+<input type="submit" value="提交" id="case-submit" />
 </div>
+</form>
 </div>
+
+
+
 {% endblock %}
 
 {% block script %}
+<script>
+var service_name="微水洗车"
 
+
+
+</script>
 
 {% endblock %}

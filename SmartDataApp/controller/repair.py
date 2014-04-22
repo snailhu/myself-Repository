@@ -223,7 +223,7 @@ def repair_create(request):
                 if upload_repair_src:
                     repair.src = upload_repair_src
                 repair.save()
-                check_admin = CheckAdminClass(repair,community_admin,'报修')
+                check_admin = CheckAdminClass(repair,community_admin,'报修',repair.id)
                 check_admin.start()
                 return render_to_response('repair_success.html',
                                           {'user': request.user, 'communities': communities, 'profile': profile,
@@ -268,7 +268,7 @@ def repair_deal(request):
                     if user_obj:
                         repair.handler = user_obj
                     repair.save()
-                    push_class = PushCheckClass(description, handler_detail, title, theme, role, repair,admin_profile)
+                    push_class = PushCheckClass(description, handler_detail, title, theme, role, repair,admin_profile,repair.id)
                     push_class.start()
                 #push_message(description, handler_detail, title)
                 response_data = {'success': True, 'info': '授权成功并推送消息至处理人！'}
@@ -320,7 +320,7 @@ def complete_repair(request):
     else:
         title="消息通知"
         description = '你的投诉已经完成处理！'
-        theme = 'repair'
+        theme = '报修'
         role = 'user'
         repair_array = request.POST.get("selected_repair_string", None)
         if repair_array:
@@ -336,7 +336,7 @@ def complete_repair(request):
                 profile = ProfileDetail.objects.get(profile=user_obj)
                 push_class = ThreadClass(description, profile, title, theme, role)
                 push_class.start()
-                check_pleased = PleasedClass(repair)
+                check_pleased = PleasedClass(repair,repair.id,theme)
                 check_pleased.start()
             response_data = {'success': True, 'info': '提交成功！'}
             return HttpResponse(simplejson.dumps(response_data), content_type="application/json")
@@ -459,7 +459,7 @@ def api_repair_create(request):
             if upload_repair_src:
                 repair.src = upload_repair_src
             repair.save()
-            check_admin = CheckAdminClass(repair,community_admin,'报修')
+            check_admin = CheckAdminClass(repair,community_admin,'报修',repair.id)
             check_admin.start()
             return HttpResponse(simplejson.dumps({'error': False, 'info': u'报修创建成功'}), content_type='application/json')
         else:
@@ -617,9 +617,9 @@ def api_repair_deal(request):
                     repair.save()
                 title = '消息通知'
                 description = '你有新的报修需要处理请查看！'
-                theme = 'repair'
+                theme = '报修'
                 role = 'worker'
-                push_class = PushCheckClass(description, handler_detail, title, theme, role, repair,admin_profile)
+                push_class = PushCheckClass(description, handler_detail, title, theme, role, repair,admin_profile,repair.id)
                 push_class.start()
                 #push_message(description, handler_detail, title)
                 response_data = {'success': True, 'info': '授权成功并推送消息至处理人！'}
@@ -655,7 +655,7 @@ def api_repair_complete(request):
                 profile = ProfileDetail.objects.get(profile=user_obj)
                 push_class = ThreadClass(description, profile, title, theme, role)
                 push_class.start()
-                check_pleased = PleasedClass(repair)
+                check_pleased = PleasedClass(repair,repair.id,theme)
                 check_pleased.start()
             response_data = {'success': True, 'info': '提交成功！'}
             return HttpResponse(simplejson.dumps(response_data), content_type="application/json")

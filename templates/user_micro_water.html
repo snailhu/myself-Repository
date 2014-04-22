@@ -38,10 +38,10 @@ select{display:block;height: 20px;font-size: 12px}
         <div class="contain-left">
         <div class="contain-detail">
             <span class="service-detail">选择付费模式:</span>  <select name="washing-type" id="select-model">
-        <option value="1" selected="selected">单次:15元/次</option>
-        <option value="2">包月:120元/月,10次/月</option>
-        <option value="3">包季:300元/季,10次/月</option>
-        <option value="4">包年:1000元/年,10次/月</option>
+        <option value="1" selected="selected">单次:{{ single_fee }}元/次</option>
+        <option value="2">包月:{{ month_fee }}元/月,10次/月</option>
+        <option value="3">包季:{{ season_fee }}元/季,10次/月</option>
+        <option value="4">包年:{{ year_fee }}元/年,10次/月</option>
       </select>
         </div>
 

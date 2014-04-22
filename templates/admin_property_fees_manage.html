@@ -131,7 +131,7 @@
                         <span>物业费金额：</span>
                         <span id="show_money">{% if fee_standard %}{{ fee_standard.fee }}元/平{% else %}暂无规定标准{% endif %}</span>
                         <input type="text" id="modify_input" style="display: none"/>&nbsp;&nbsp;&nbsp;
-                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_fee(this)"id="modify_one">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_fee(this)"id="modify_single">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
                         <div id="show_choice_one" class="btn_group">
                             <button style="background: url(/static/images/decide.png) no-repeat;"class="btn_style"onclick="submit_fee()"></button>
                             <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn_style"onclick="cancel_modify_fee(this)"></button>
@@ -161,7 +161,6 @@
             $('#show_choice_one').show()
             $('#modify_input').show()
             $('#show_money').hide()
-
         }
         function modify_deadline(obj){
             $(obj).hide();

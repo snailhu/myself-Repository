@@ -18,7 +18,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.models import User
 #from SmartDataApp.controller.admin import convert_session_id_to_user
 from SmartDataApp.controller.admin import convert_session_id_to_user
-from SmartDataApp.models import Complaints, Repair
+from SmartDataApp.models import Complaints, Repair, Express
 from SmartDataApp.pusher.Channel import Channel
 from SmartDataApp.views import index
 from SmartDataApp.models import ProfileDetail, Community,Wallet
@@ -163,32 +163,44 @@ def complain(request):
                                    'community': one_community, 'change_community': status})
 
 class CheckAdminClass(threading.Thread):
-    def __init__(self,item,admin,theme):
+    def __init__(self,item,admin,theme,id):
       threading.Thread.__init__(self)
       self._item = item
       self._admin = admin
       self._theme = theme
+      self._id = id
+    def get_item(self):
+        if self._theme == '投诉':
+            check_item = Complaints.objects.get(id=self._id)
+        elif self._theme == '报修':
+            check_item = Repair.objects.get(id=self._id)
+        else:
+            check_item = Express.objects.get(id=self._id)
+        return check_item
+
     def check_status(self):
-        if self._item.status ==1:
-            payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':'15862396507','content':''+self._admin.profile.username+'未对'+self._theme+'申请做处理。'}
+        check_item = self.get_item()
+        if check_item.status ==1:
+            payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':'15862396507','content':''+self._admin.profile.username+'未对'+self._theme+'申请做处理。'+str(datetime.datetime.now()).split('.')[0]+''}
             r = requests.post("http://106.ihuyi.com/webservice/sms.php?method=Submit", data=payload)
             print r.text
 
     def run(self):
-        payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._admin.phone_number+'','content':'您收到'+self._item.author+'的'+self._theme+'申请，请尽快处理。'}
+        payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._admin.phone_number+'','content':'您收到'+self._item.author+'的'+self._theme+'申请，请尽快处理。'+str(datetime.datetime.now()).split('.')[0]+''}
         r = requests.post("http://106.ihuyi.com/webservice/sms.php?method=Submit", data=payload)
         print r.text
         time.sleep(120)
-        if self._item.status ==1:
+        check_item = self.get_item()
+        if check_item.status ==1:
             try:
-                  payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._admin.phone_number+'','content':'您收到'+self._item.author+'的'+self._theme+'申请，还未处理，请立即处理。'}
+                  payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._admin.phone_number+'','content':'您收到'+self._item.author+'的'+self._theme+'申请，还未处理，请立即处理。'+str(datetime.datetime.now())+''}
                   r = requests.post("http://106.ihuyi.com/webservice/sms.php?method=Submit", data=payload)
                   print r.text
                   check_thread = threading.Timer(120, self.check_status)
                   check_thread.start()
             except Exception ,e:
                 print e
-                payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._admin.phone_number+'','content':'您收到'+self._item.author+'的'+self._theme+'申请，还未处理，请立即处理。'}
+                payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._admin.phone_number+'','content':'您收到'+self._item.author+'的'+self._theme+'申请，还未处理，请立即处理。'+str(datetime.datetime.now())+''}
                 r = requests.post("http://106.ihuyi.com/webservice/sms.php?method=Submit", data=payload)
                 print r.text
                 check_thread.start()
@@ -227,7 +239,7 @@ def complain_create(request):
             if upload__complain_src:
                 complain.src = upload__complain_src
             complain.save()
-            check_admin = CheckAdminClass(complain,community_admin,'投诉')
+            check_admin = CheckAdminClass(complain,community_admin,'投诉',complain.id)
             check_admin.start()
             return render_to_response('complain_success.html',
                                       {'user': request.user, 'communities': communities, 'profile': profile,
@@ -264,7 +276,7 @@ class JudgeClass(threading.Thread):
   def run(self):
     try:
         if self._item.pleased != 1:
-            payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._handler_profile.phone_number+'','content':''+self._item.author+'的'+self._theme+'服务被给与差评。'}
+            payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._handler_profile.phone_number+'','content':''+self._item.author+'的'+self._theme+'服务被给与差评。'+str(datetime.datetime.now())+''}
             r = requests.post("http://106.ihuyi.com/webservice/sms.php?method=Submit", data=payload)
             print r.text
     except Exception ,e:
@@ -272,13 +284,24 @@ class JudgeClass(threading.Thread):
 
 
 class PleasedClass(threading.Thread):
-  def __init__(self,item):
+  def __init__(self,item,id,theme):
       threading.Thread.__init__(self)
       self._item = item
+      self._theme = theme
+      self._id = id
+  def get_item(self):
+        if self._theme == '投诉':
+            check_item = Complaints.objects.get(id=self._id)
+        elif self._theme == '报修':
+            check_item = Repair.objects.get(id=self._id)
+        else:
+            check_item = Express.objects.get(id=self._id)
+        return check_item
   def check_pleased(self):
-        if self._item.pleased:
-           self._item.pleased = 1
-           self._item.save()
+        check_item = self.get_item()
+        if not check_item.pleased:
+           check_item.pleased = 1
+           check_item.save()
   def run(self):
     try:
         #check_thread = threading.Timer(60*24*7, self.check_pleased,)
@@ -303,7 +326,7 @@ class ThreadClass(threading.Thread):
         push_message(self._description, self._handler_detail, self._title, self._theme, self._role)
 
 class PushCheckClass(threading.Thread):
-  def __init__(self, description, handler_detail, title, theme, role, item,admin):
+  def __init__(self, description, handler_detail, title, theme, role, item,admin,id):
       threading.Thread.__init__(self)
       self._description = description
       self._handler_detail = handler_detail
@@ -312,15 +335,26 @@ class PushCheckClass(threading.Thread):
       self._role = role
       self._item = item
       self._admin = admin
+      self._id = id
+  def get_item(self):
+        if self._theme == '投诉':
+            check_item = Complaints.objects.get(id=self._id)
+        elif self._theme == '报修':
+            check_item = Repair.objects.get(id=self._id)
+        else:
+            check_item = Express.objects.get(id=self._id)
+        return check_item
   def check_status(self):
-        if self._item.status == 4:#代表已受理但是工作人员还未处理
-            payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._handler_detail.phone_number+'','content':'有新的任务没有接受，请立即登录平台查看。'}
+        check_item = self.get_item()
+        if check_item.status == 4:#代表已受理但是工作人员还未处理
+            payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._handler_detail.phone_number+'','content':'有新的任务没有接受，请立即登录平台查看!'+str(datetime.datetime.now())+''}
             r = requests.post("http://106.ihuyi.com/webservice/sms.php?method=Submit", data=payload)
-            check_thread = threading.Timer(90, self.check_status_again,[complain])
+            check_thread = threading.Timer(90, self.check_status_again)
             check_thread.start()
-  def check_status_again(self,h):
-      if h.status == 4:
-         payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._admin.phone_number+'','content':'【变量】没有接受【变量】，请立即重新分配该任务。'}
+  def check_status_again(self):
+      check_item = self.get_item()
+      if check_item.status == 4:
+         payload = {'account': 'cf_xldkj' , 'password': 'sfi-server','mobile':''+self._admin.phone_number+'','content':'【变量】没有接受【变量】，请立即重新分配该任务。'+str(datetime.datetime.now())+''}
          r = requests.post("http://106.ihuyi.com/webservice/sms.php?method=Submit", data=payload)
          print r.text
 
@@ -365,7 +399,7 @@ def complain_deal(request):
                     if user_obj:
                         complain.handler = user_obj
                     complain.save()
-                    push_class = PushCheckClass(description, handler_detail, title, theme, role, complain,admin_profile)
+                    push_class = PushCheckClass(description, handler_detail, title, theme, role, complain,admin_profile,complain.id)
                     push_class.start()
                 response_data = {'success': True, 'info': '授权成功并推送消息至处理人！'}
                 return HttpResponse(simplejson.dumps(response_data), content_type="application/json")
@@ -432,7 +466,7 @@ def complain_complete(request):
     else:
         title="消息通知"
         description = '你的投诉已经完成处理！'
-        theme = 'complain'
+        theme = '投诉'
         role = 'user'
         complain_array = request.POST.get("selected_complain_string", None)
         if complain_array:
@@ -448,7 +482,7 @@ def complain_complete(request):
                 profile = ProfileDetail.objects.get(profile=user_obj)
                 push_class = ThreadClass(description, profile, title, theme, role)
                 push_class.start()
-                check_pleased = PleasedClass(complain)
+                check_pleased = PleasedClass(complain,theme,complain.id)
                 check_pleased.start()
             response_data = {'success': True, 'info': '提交成功！'}
             return HttpResponse(simplejson.dumps(response_data), content_type="application/json")
@@ -574,7 +608,7 @@ def api_complain_create(request):
             if upload__complain_src:
                 complain.src = upload__complain_src
             complain.save()
-            check_admin = CheckAdminClass(complain,community_admin,'投诉')
+            check_admin = CheckAdminClass(complain,community_admin,'投诉',complain.id)
             check_admin.start()
             return HttpResponse(simplejson.dumps({'error': False, 'info': u'投诉创建成功'}), content_type='application/json')
         else:
@@ -638,7 +672,7 @@ def api_complain_response(request):
         handler_profile = ProfileDetail.objects.get(profile=complain.handler)
         title = '消息通知'
         description = '用户已对你的处理作出评价！'
-        theme = 'complain'
+        theme = '投诉'
         role = 'worker'
         if complain and selected_pleased:
             complain.pleased_reason = response_content
@@ -646,7 +680,7 @@ def api_complain_response(request):
             complain.save()
             push_thread = ThreadClass(description,handler_profile,title, theme, role)
             push_thread.start()
-            judge_pleased = JudgeClass(complain.theme_one,handler_profile)
+            judge_pleased = JudgeClass(complain.theme,handler_profile)
             judge_pleased.start()
             response_data = {'success': True, 'info': '反馈成功！'}
             return HttpResponse(simplejson.dumps(response_data), content_type='application/json')
@@ -732,7 +766,7 @@ def api_complain_deal(request):
                     if user_obj:
                         complain.handler = user_obj
                     complain.save()
-                    push_class = PushCheckClass(description, handler_detail, title, theme, role, complain,admin_profile)
+                    push_class = PushCheckClass(description, handler_detail, title, theme, role, complain,admin_profile,complain.id)
                     push_class.start()
                     #push_message(description, handler_detail, title)
                 response_data = {'success': True, 'info': u'授权成功，并推送消息至处理人！'}
@@ -756,7 +790,7 @@ def api_complain_complete(request):
         complain_array = data.get("complains_id_string", None)
         title = '消息通知'
         description = '你投诉已完成处理'
-        theme = 'complain'
+        theme = '投诉'
         role = 'user'
         if complain_array:
             list_complain_ = str(complain_array).split(",")
@@ -771,7 +805,7 @@ def api_complain_complete(request):
                 complain.save()
                 push_class = ThreadClass(description, profile, title, theme, role)
                 push_class.start()
-                check_pleased = PleasedClass(complain)
+                check_pleased = PleasedClass(complain,theme,complain.id)
                 check_pleased.start()
             response_data = {'success': True, 'info': '提交成功！'}
             return HttpResponse(simplejson.dumps(response_data), content_type="application/json")

@@ -1,0 +1,353 @@
+{% extends "basecloud.html" %}
+{% block title %}停车费管理{% endblock %}
+{% block css %}
+<link href="/static/css/jquery-ui-1.7.2.custom.css" rel="stylesheet">
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .repair1, span, button {
+            font-size: 15px;
+
+        }
+
+        tr:first-child {
+            background-color: #f3f3f3;;
+        }
+
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+{#            border: 1px solid red;#}
+            width: 1171px !important;
+        }
+        .repair_header{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+        .repair_header li{
+            padding-left: 116px;
+            float: left;
+        }
+
+        .vessel .vessel_titBox {
+            background: url("") repeat-x scroll 0 -226px rgba(0, 0, 0, 0);
+            border-bottom: 1px solid #00a1e9;
+            height: 40px;
+            line-height: 40px;!important
+    }
+        .vessel{
+            border: 0px ;
+        }
+
+        .repair_right_container{
+
+        }
+        .repair_right_container li{
+            float:left;
+            text-align: center;
+            padding-top: 8px;
+            height: 80px;
+{#            border: 1px solid red;#}
+        }
+      .border_style{
+{#          border-left:2px solid #eeeeee#}
+      }
+    .park_header ul li{
+        width:100px;
+        height: 30px;
+        border: 1px solid red;
+   }
+    .btn_group{
+        float: right;
+        display: none;
+        margin-top: -2px;
+    }
+    .btn_style{
+        width: 28px;
+        height: 27px
+    }
+    </style>
+
+{% endblock %}
+{% block right_container %}
+    <div style="height:500px;width: 850px;overflow: auto;border-top: 0px;margin-left: 5px;float: left;background-color: #ffffff">
+                <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a href="/parking/fees/?btn_style=1"
+                                class="btn_type btn {% if btn_style == 1 %}btn-primary{% endif %} "
+                                style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 95px">
+                               停车费详情
+                             </a>
+                             <a href="/park_fee_manage/?btn_style=2"
+                               class="btn_type btn {% if btn_style == 2 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 95px">
+                                停车费管理
+                            </a>
+                        </div>
+                </div>
+                <div style="padding: 10px 20px" id="manage_park_fee_detail">
+                    <div style="width:380px">
+                        <span>租车位金额：</span>
+                        <span id="show_money">{% if temporary_fee_standard %}{{ temporary_fee_standard.fee }}元/年{% else %}暂无规定标准{% endif %}</span>
+                        <input type="text" id="modify_input" style="display: none"/>&nbsp;&nbsp;&nbsp;
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_fee(this)"id="modify_one">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
+                        <div id="show_choice_one" class="btn_group">
+                            <button style="background: url(/static/images/decide.png) no-repeat;"class="btn_style"onclick="submit_fee_temporary()"></button>
+                            <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn_style"onclick="cancel_modify_fee(this)"></button>
+                        </div>
+                    </div>
+                     <div style="margin-top: 20px;width:390px">
+                        <span>买断车位金额：</span>
+                        <span id="show_time">{% if permanent_fee_standard %}{{ permanent_fee_standard.fee }}{% else %}暂无规定标准{% endif %}</span>
+                        <input type="text" name="datetime" id="datetime" value="" style="display: none"/>&nbsp;&nbsp;&nbsp;
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_deadline(this)" id="modify_two">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
+                        <div class="btn_group"id="show_choice_two">
+                            <button style="background: url(/static/images/decide.png) no-repeat;"class="btn_style"onclick="submit_fee_permanent()"></button>
+                            <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn_style" onclick="cancel_modify_deadline(this)"></button>
+                        </div>
+                    </div>
+                      <div style="margin-top: 20px;">
+                            <button style="background: url(/static/images/add_new_position.png) no-repeat;width:105px;height: 32px"class="btn_style"onclick="show_add_park_position()"></button>
+                      </div>
+                </div>
+                <div style="padding: 10px 20px;display: none" id="add_park_position">
+                    <div style="border: 2px solid #000000;width: 500px;height: 400px;margin: 0 auto">
+                        <div style="border-bottom: 1px #808080 solid">
+                            <h4> 新增停车位</h4>
+                        </div>
+                        <div style="padding-left: 30px">
+                             <div style="padding-top: 20px">
+                                    <span>输入楼栋号</span>：<input type="text" name="building"id="building_num"placeholder="必须为数字">
+                             </div>
+                              <div style="padding-top: 20px">
+                                    <span>输入房间号</span>：<input type="text" name="room"id="room_num"placeholder="必须为数字">
+                             </div>
+                             <div style="padding-top: 20px">
+                                  车位类型：
+                                        <select id="type_for_parking">
+                                            <option value="1">买断车位</option>
+                                            <option value="2 ">租停车位</option>
+                                        </select>
+                             </div>
+
+                             <div style="padding-top: 20px">
+                                  缴费类型：
+                                        <select id="pay_for_parking">
+                                            <option value="6">半年</option>
+                                            <option value="12 ">一年</option>
+                                        </select>
+                             </div>
+
+                            <div style="padding-top: 20px">
+                                  <span>停车位</span>：<input type="text" name="park_position"placeholder="不能重复且必须为数字"id="position_park">
+                             </div>
+
+                            <div style="padding-top: 20px">
+                                  <button style="background: url(/static/images/decide_add_position.png) no-repeat;width: 74px;height: 32px;
+                                  "class="btn_style"onclick="decide_add_park_position()"></button>
+                             </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                  <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                  </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script>
+    function show_add_park_position(){
+        $("#manage_park_fee_detail").hide();
+        $("#add_park_position").show();
+    }
+
+        function decide_add_park_position(obj){
+            var building_num = $('#building_num').val().replace(/(^\s*)|(\s*$)/g, "")
+            var room_num = $('#room_num').val().replace(/(^\s*)|(\s*$)/g, "")
+            var position_park = $('#position_park').val()
+            var type_for_parking = $('#type_for_parking').val()
+            var pay_for_parking = $('#pay_for_parking').val().replace(/(^\s*)|(\s*$)/g, "")
+            var re = /^\d+$/
+
+            if (re.test(building_num) && re.test(room_num) && type_for_parking && re.test(position_park) && pay_for_parking)
+            {
+                $.post('/admin_distribute_park_position/',
+                        {
+                            'building_num':building_num,
+                            'position_park':position_park,
+                            'room_num':room_num,
+                            'pay_for_parking':pay_for_parking,
+                            'type_for_parking':type_for_parking
+                        },
+                        function(data){
+                            if(data.success){
+                                alert(data.info)
+                                 $("#manage_park_fee_detail").show();
+                                 $("#add_park_position").hide();
+                            }else{
+                                alert(data.info)
+                            }
+                        }
+                )
+            }else{
+                alert("请填入信息且必位数字")
+            }
+
+        }
+
+        function modify_fee(obj){
+            $(obj).hide();
+            $('#show_choice_one').show()
+            $('#modify_input').show()
+            $('#show_money').hide()
+
+        }
+        function modify_deadline(obj){
+            $(obj).hide();
+            $('#show_choice_two').show()
+            $('#show_time').hide()
+            $('#datetime').show()
+        }
+        function cancel_modify_deadline(obj){
+            $('#show_choice_two').hide()
+            $('#modify_two').show()
+            $('#show_time').show()
+            $('#datetime').hide()
+        }
+        function cancel_modify_fee(obj){
+            $('#show_choice_one').hide()
+            $('#modify_one').show()
+            $('#show_money').show()
+            $('#modify_input').hide()
+        }
+
+        function submit_fee_temporary(){
+            $('#show_choice_one').hide()
+            var fee=$('#modify_input').val();
+            $('#modify_one').show()
+            $('#show_money').show()
+            $('#modify_input').hide()
+{#            var re = /^\d+(\.\d*)?$|\.\d+$/#}
+            var re = /^\d+\.?\d+$/
+            if (fee.replace(/(^\s*)|(\s*$)/g, "")){
+                if (re.test(fee)){
+                        $.post('/modify_park_fee/',
+                        {
+                             'type':'temporary',
+                             'new_fee':fee
+                        },
+                       function(data){
+                           if(data.success){
+                                $('#show_money').html(''+fee+'元/年')
+                               alert(data.info);
+                           }else{
+                               alert(data.info);
+                           }
+
+                       }
+                    )
+                }else{
+                    $('#show_money').hide()
+                    $('#modify_one').hide()
+                    $('#show_choice_one').show()
+                    $('#modify_input').show()
+                    alert("必须为数字");
+                }
+
+            }else{
+                $('#show_money').hide()
+                $('#modify_one').hide()
+                $('#show_choice_one').show()
+                $('#modify_input').show()
+                    alert("请填入数字");
+                }
+
+        }
+
+
+        function submit_fee_permanent(){
+            $('#show_choice_two').hide()
+            var fee=$('#datetime').val();
+            $('#modify_two').show()
+            $('#show_time').show()
+            $('#datetime').hide()
+            var re = /^\d+\.?\d+$/
+            if (fee.replace(/(^\s*)|(\s*$)/g, "")){
+                if (re.test(fee)){
+                        $.post('/modify_park_fee/',
+                        {
+                             'type':'permanent',
+                             'new_fee':fee
+                        },
+                       function(data){
+                           if(data.success){
+                                $('#show_time').html(''+fee+'元/年')
+                               alert(data.info);
+
+                           }else{
+                               alert(data.info);
+                           }
+
+                       }
+                    )
+                }else{
+                    $('#show_time').hide()
+                    $('#modify_two').hide()
+                    $('#show_choice_two').show()
+                    $('#datetime').show()
+                    alert("必须为数字");
+                }
+
+            }else{
+                $('#show_time').hide()
+                $('#modify_two').hide()
+                $('#show_choice_two').show()
+                $('#datetime').show()
+                    alert("请填入数字");
+                }
+        }
+    </script>
+{% endblock %}

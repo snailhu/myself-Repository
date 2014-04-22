@@ -28,10 +28,10 @@ tr{height: 30px}
 
                 <tr>
                     <td class="left-info">付费方式:</td><td>&nbsp;&nbsp;</td><td>
-                    {% ifequal detail.washing_type "1" %}单次:15元/次{% endifequal %}
-                    {% ifequal detail.washing_type "2" %}包月:120元/月,10次/月{% endifequal %}
-                    {% ifequal detail.washing_type "3" %}包季:300元/月,10次/月{% endifequal %}
-                    {% ifequal detail.washing_type "4" %}包月:1000元/次,10次/月{% endifequal %}
+                    {% ifequal detail.washing_type "1" %}单次:{{ total_money }}元/次{% endifequal %}
+                    {% ifequal detail.washing_type "2" %}包月:{{ total_money }}元/月,10次/月{% endifequal %}
+                    {% ifequal detail.washing_type "3" %}包季:{{ total_moeny }}元/月,10次/月{% endifequal %}
+                    {% ifequal detail.washing_type "4" %}包年:{{ total_moeny }}元/次,10次/月{% endifequal %}
                     </td>
                 </tr>
                 <tr>

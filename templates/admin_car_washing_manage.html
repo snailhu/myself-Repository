@@ -1,0 +1,402 @@
+{% extends "base_live.html" %}
+{% block title %}微水洗车管理{% endblock %}
+{% block css %}
+    <style>
+        .help-inline {
+            display: block;
+            margin-left: 70px;
+            padding-top: 10px;
+        }
+
+        .error {
+            color: #f00;
+        }
+
+        input.error {
+            border-color: #f00;
+        }
+
+        .repair1, span, button {
+            font-size: 15px;
+
+        }
+
+        tr:first-child {
+            background-color: #f3f3f3;;
+        }
+
+
+        .prev {
+            margin-left: 200px !important;
+        }
+
+        .next {
+            margin-left: 20px !important;
+        }
+
+        .dataTables_wrapper {
+            padding-left: 0px !important;
+        }
+
+        .dataTables_paginate {
+            float: right;
+            margin-top: -20px;
+        }
+
+        .dataTables_paginate li {
+            float: left
+        }
+
+        .dataTables_filter {
+            float: right;
+            margin-top: -25px
+        }
+
+        .container {
+{#            border: 1px solid red;#}
+            width: 1171px !important;
+        }
+        .repair_header{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+         .repair_header_deal{
+            margin-top: -10px;
+            padding-top: 6px;
+            height:32px;
+            border-bottom: 1px solid #808080;
+            background-color: #f3f3f3;
+
+        }
+
+             .repair_header li{
+                padding-left: 116px;
+                float: left;
+              }
+
+
+        .repair_header_deal li{
+            padding-left: 89px;
+            float: left;
+        }
+
+        .vessel .vessel_titBox {
+            background: url("") repeat-x scroll 0 -226px rgba(0, 0, 0, 0);
+            border-bottom: 2px solid #fe920f;
+            height: 39px;
+            line-height: 40px;!important
+    }
+        .vessel{
+            border: 0px ;
+        }
+
+        .repair_right_container{
+
+        }
+        .once li{
+            padding-left: 195px;
+        }
+        .repair_right_container li{
+            float:left;
+            text-align: center;
+            padding-top: 8px;
+            height: 80px;
+{#            border: 1px solid red;#}
+        }
+
+        .btn_group{
+            display: none;
+            margin: -25px 0 0 270px;
+        }
+      .btn{
+        width: 28px;
+        height: 27px
+    }
+      .border_style{
+{#          border-left:2px solid #eeeeee#}
+      }
+    .btn_style{
+        border:1px solid #dcdcdc;
+        border-radius: 0px 0px 0px 0px;
+        height:34px;
+        border-bottom:1px solid #fe920f;
+    }
+    </style>
+
+{% endblock %}
+
+{% block right_container %}
+            <!-- 中部 start -->
+            <div style="width: 944px;overflow: auto;border-top: 0px;margin-left: 5px;float: left;background-color: #ffffff">
+                  <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a href="/car_washing/?status=once"
+                                class="btn_style btn_type btn {% if status == 'once' %}btn-primary{% endif %} "
+                                style="width: 70px">
+                              单次
+                             </a>
+
+
+                            <a href="/car_washing/?status=month"
+                               class="btn_style btn_type btn {% if status == 'month' %}btn-primary{% endif %} "
+                               style="width: 80px">
+                               包月
+                            </a>
+
+                             <a href="/car_washing/?status=season"
+                                class="btn_style btn_type btn {% if status == 'season' %}btn-primary{% endif %} "
+                                style="width: 70px">
+                               包季
+                             </a>
+                            <a href="/car_washing/?status=year"
+                               class="btn_style btn_type btn {% if status == 'year' %}btn-primary{% endif %} "
+                               style="width: 80px">
+                               包年
+                            </a>
+                             <a href="/car_washing/manage/"
+                               class="btn_style btn_type btn {% if btn_style == 'manage' %}btn-primary{% endif %} "
+                               style="width: 108px">
+                               微水洗车管理
+                            </a>
+                        </div>
+
+                  </div>
+             <div style="padding: 20px 0 30px 15px ">
+             <div style="padding: 10px 20px">
+                  <div style="width:355px">
+                        <span>微水洗车单次:</span>
+                        <span id="show_money_single">{% if single_fee %}{{ single_fee }}元/次{% else %}暂无规定标准{% endif %}</span>
+                        <input type="text" id="modify_input_single" style="display: none" value="{{ single_fee }}"/>&nbsp;&nbsp;&nbsp;
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_fee_single(this)"id="modify_single">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
+                        <div class="btn_group"id="show_choice_single">
+                            <button style="background: url(/static/images/decide.png) no-repeat;"class="btn"onclick="submit_single(this)"></button>
+                            <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn" onclick="cancel_modify_single(this)"></button>
+                        </div>
+                        </div>
+                    </div>
+
+                      <div style="padding: 10px 20px">
+                        <div style="width:355px">
+                        <span>微水洗车包月:</span>
+                        <span id="show_money_month">{% if month_fee %}{{ month_fee }}元/月{% else %}暂无规定标准{% endif %}</span>
+                        <input type="text" id="modify_input_month" style="display: none" value="{{ month_fee }}"/>&nbsp;&nbsp;&nbsp;
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_fee_month(this)"id="modify_month">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
+                         <div class="btn_group"id="show_choice_month">
+                            <button style="background: url(/static/images/decide.png) no-repeat;"class="btn"onclick="submit_month(this)"></button>
+                            <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn" onclick="cancel_modify_month(this)"></button>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 10px 20px">
+                        <div style="width:355px">
+                        <span>微水洗车包季:</span>
+                        <span id="show_money_season">{% if season_fee %}{{ season_fee }}元/季{% else %}暂无规定标准{% endif %}</span>
+                        <input type="text" id="modify_input_season" style="display: none" value="{{ season_fee }}"/>&nbsp;&nbsp;&nbsp;
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_fee_season(this)"id="modify_season">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
+                         <div class="btn_group"id="show_choice_season">
+                            <button style="background: url(/static/images/decide.png) no-repeat;"class="btn"onclick="submit_season(this)"></button>
+                            <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn" onclick="cancel_modify_season(this)"></button>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 10px 20px">
+                        <div style="width:355px">
+                        <span>微水洗车包年:</span>
+                        <span id="show_money_year">{% if year_fee %}{{ year_fee}}元/年{% else %}暂无规定标准{% endif %}</span>
+                        <input type="text" id="modify_input_year" style="display: none" value="{{ year_fee }}">&nbsp;&nbsp;&nbsp;
+                        <span style="cursor:pointer;color: dodgerblue;" onclick="modify_fee_year(this)"id="modify_year">修改&nbsp;<font color="red" size="2px">（**必须填数字**）</font></span>
+                         <div class="btn_group"id="show_choice_year">
+                            <button style="background: url(/static/images/decide.png) no-repeat;"class="btn"onclick="submit_year(this)"></button>
+                            <button style="background: url(/static/images/cancel.png) no-repeat;"class="btn" onclick="cancel_modify_year(this)"></button>
+                        </div>
+                        </div>
+                    </div>
+             </div>
+
+            </div>
+
+
+
+{% endblock %}
+
+{% block script %}
+   <script>
+    function modify_fee_single(obj){
+            $(obj).hide();
+            $('#modify_input_single').show()
+            $('#show_money_single').hide()
+            $('#show_choice_single').show()
+        }
+
+    function modify_fee_month(obj){
+            $(obj).hide();
+            $('#modify_input_month').show()
+            $('#show_money_month').hide()
+            $('#show_choice_month').show()
+        }
+
+    function modify_fee_season(obj){
+            $(obj).hide();
+            $('#modify_input_season').show()
+            $('#show_money_season').hide()
+            $('#show_choice_season').show()
+        }
+
+    function modify_fee_year(obj){
+            $(obj).hide();
+            $('#modify_input_year').show()
+            $('#show_money_year').hide()
+            $('#show_choice_year').show()
+        }
+
+    function submit_single(obj){
+        $('#show_choice_single').hide()
+        var fee=$('#modify_input_single').val();
+        $('#modify_single').show()
+        $('#show_money_single').show()
+        $('#modify_input_single').hide()
+        var re = /^\d+\.?\d+$/
+        if (re.test(fee)){
+            $.post('/car_washing/modify_fee/' ,{
+                        "type":"single",
+                        "new_fee":fee
+                    },
+                     function(data){
+                           if(data.success){
+                                $('#show_money_single').html(''+fee+'元/次')
+                               alert(data.info);
+                           }else{
+                               alert(data.info);
+                           }
+
+                       }
+                    )
+        }
+        else{
+            alert("只能输入数字！")
+        }
+
+    }
+
+   function submit_month(obj){
+        $('#show_choice_month').hide()
+        var fee=$('#modify_input_month').val()
+        $('#modify_month').show()
+        $('#show_money_month').show()
+        $('#modify_input_month').hide()
+        var re = /^\d+\.?\d+$/
+        if (re.test(fee)){
+            $.post('/car_washing/modify_fee/' ,{
+                        "type":"month",
+                        "new_fee":fee
+                    },
+                     function(data){
+                           if(data.success){
+                                $('#show_money_month').html(''+fee+'元/月')
+                               alert(data.info);
+                           }else{
+                               alert(data.info);
+                           }
+
+                       }
+                    )
+        }
+         else{
+            alert("只能输入数字！")
+        }
+
+    }
+
+    function submit_season(obj){
+        $('#show_choice_season').hide()
+        var fee=$('#modify_input_season').val()
+        $('#modify_season').show()
+        $('#show_money_season').show()
+        $('#modify_input_season').hide()
+        var re = /^\d+\.?\d+$/
+        if (re.test(fee)){
+            $.post('/car_washing/modify_fee/' ,{
+                        "type":"season",
+                        "new_fee":fee
+                    },
+                     function(data){
+                           if(data.success){
+                                $('#show_money_season').html(''+fee+'元/季')
+                               alert(data.info);
+                           }else{
+                               alert(data.info);
+                           }
+
+                       }
+                    )
+        }
+          else{
+            alert("只能输入数字！")
+        }
+
+    }
+
+    function submit_year(obj){
+        $('#show_choice_year').hide()
+        var fee=$('#modify_input_year').val()
+        $('#modify_year').show()
+        $('#show_money_year').show()
+        $('#modify_input_year').hide()
+        var re = /^\d+\.?\d+$/
+        if (re.test(fee)){
+            $.post('/car_washing/modify_fee/' ,{
+                        "type":"year",
+                        "new_fee":fee
+                    },
+                     function(data){
+                           if(data.success){
+                                $('#show_money_year').html(''+fee+'元/年')
+                               alert(data.info);
+                           }else{
+                               alert(data.info);
+                           }
+
+                       }
+                    )
+        }
+          else{
+            alert("只能输入数字！")
+        }
+
+    }
+
+   function cancel_modify_single(obj){
+       $('#modify_single').show()
+       $('#modify_input_single').hide()
+       $('#show_money_single').show()
+       $('#show_choice_single').hide()
+   }
+
+   function cancel_modify_month(obj){
+       $('#modify_month').show()
+       $('#modify_input_month').hide()
+       $('#show_money_month').show()
+       $('#show_choice_month').hide()
+   }
+
+    function cancel_modify_season(obj){
+       $('#modify_season').show()
+       $('#modify_input_season').hide()
+       $('#show_money_season').show()
+       $('#show_choice_season').hide()
+   }
+
+      function cancel_modify_year(obj){
+       $('#modify_year').show()
+       $('#modify_input_year').hide()
+       $('#show_money_year').show()
+       $('#show_choice_year').hide()
+   }
+   </script>
+{% endblock %}

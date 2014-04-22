@@ -162,6 +162,21 @@ def property_fee_manage(request):
       return render_to_response('housing_service_fee.html', {'user': request.user,'profile': profile,'communities': communities,'community': one_community, 'change_community': status})
 
 
+def get_a_order_number(order_num):
+    records = OrderNumber.objects.all()
+    record_num = OrderNumber.objects.all().count()
+    if not record_num:
+        order_number = OrderNumber()
+        order_number.number = 10000000
+        order_num = 10000000
+        order_number.save()
+    else:
+        order_number = OrderNumber()
+        order_number.number = int(records[record_num - 1].number) + 1
+        order_num = int(records[record_num - 1].number) + 1
+        order_number.save()
+    return order_num
+
 
 @transaction.atomic
 @csrf_exempt
@@ -181,18 +196,7 @@ def user_pay_property_by_year(request):
     if fee_standard:
         fee_standard = fee_standard[0]
         total_money = '%.2f'%float(profile.house_acreage*fee_standard.fee*12)
-        records = OrderNumber.objects.all()
-        record_num = OrderNumber.objects.all().count()
-        if not record_num:
-            order_number = OrderNumber()
-            order_number.number = 10000000
-            order_num = 10000000
-            order_number.save()
-        else:
-            order_number = OrderNumber()
-            order_number.number = int(records[record_num-1].number)+1
-            order_num = int(records[record_num-1].number)+1
-            order_number.save()
+        order_num = get_a_order_number(order_num)
         property_transaction = Transaction()
         property_transaction.action = '物业缴费'
         property_transaction.time = datetime.datetime.now()

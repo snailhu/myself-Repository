@@ -1,4 +1,5 @@
 #coding:utf-8
+import decimal
 import hashlib
 import re
 import threading
@@ -727,6 +728,37 @@ def modify_property_fee(request):
         fee_standard.save()
     response_data = {'success': True,'info':'修改成功'}
     return HttpResponse(simplejson.dumps(response_data),content_type='application/json')
+
+
+@transaction.atomic
+@csrf_exempt
+@login_required(login_url='/login/')
+def modify_park_fee(request):
+    new_fee = request.POST.get('new_fee',None)
+    park_type = request.POST.get('type',None)
+    if park_type == 'permanent':
+        fee_standard = Fee_standard.objects.filter(type='买断停车费')
+        if fee_standard:
+            fee_standard[0].fee = decimal.Decimal(str(new_fee))
+            fee_standard[0].save()
+        else:
+            fee_standard = Fee_standard()
+            fee_standard.type = '买断停车费'
+            fee_standard.fee = decimal.Decimal(str(new_fee))
+            fee_standard.save()
+    else:
+        fee_standard = Fee_standard.objects.filter(type='租赁停车费')
+        if fee_standard:
+            fee_standard[0].fee = decimal.Decimal(str(new_fee))
+            fee_standard[0].save()
+        else:
+            fee_standard = Fee_standard()
+            fee_standard.type = '租赁停车费'
+            fee_standard.fee = decimal.Decimal(str(new_fee))
+            fee_standard.save()
+    response_data = {'success': True,'info':'修改成功'}
+    return HttpResponse(simplejson.dumps(response_data),content_type='application/json')
+
 
 
 @transaction.atomic

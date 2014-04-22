@@ -21,7 +21,8 @@
                 <div class="vessel_titBox">
                     <span class="tit">停车费</span>
                 </div>
-                <div class="vessel_conBox">
+                {% if show_detail_info %}
+                                    <div class="vessel_conBox">
                     <!--缴费步骤 start-->
                     <div class="vessel_conBox_step">
                         <div class="vessel_conBox_step_head">
@@ -40,13 +41,13 @@
                     <div class="vessel_conBox_text">
 
                         <div class="vessel_conBox_text_head">
-                            <span class="vessel_conBox_step_head1">所选停车卡</span>
+                            <span class="vessel_conBox_step_head1">所有停车卡</span>
                         </div>
 
 
                         <!--增加部分隐藏 start-->
-                        <form action="/user/property/verifyParking/" method="post" name="parking-fees-form">
-                            <div id="add" style="display: block;">
+                        <form action="/user/property/verifyParking/" method="post" name="parking-fees-form" onsubmit="return check_radio()">
+{#                            <div id="add" style="display: block;">#}
                                 <div class="el_tipPop_h_i">
 {#                                    <span class="title">增加停车卡</span>#}
                                 </div>
@@ -61,22 +62,20 @@
                                         <span>楼栋房号：</span>
                                         <input disabled = 'disabled'  class="func_building_parking xiaoqu el_btn" type="text" value="{{ profile.floor }}栋{{ profile.gate_card }}">
                                     </p>
-
-                                    <p>
-                                        <span>车&nbsp;&nbsp;牌&nbsp;&nbsp;号：</span>
-                                        <input class="el_inText" type="text" id="car_number" placeholder="车牌号"required="required"
-                                               name="car_number">
-                                    </p>
+                                    {% for park_type in park_fee %}
+                                        <p>
+                                                <span>车位类型：</span>{{ park_type.park_type }}&nbsp;&nbsp;&nbsp;
+                                                <span>有效期：</span>{{ park_type.pay_date|date:"Y-m-d" }}至{{ park_type.deadline |date:"Y-m-d" }}&nbsp;&nbsp;&nbsp;
+                                                <span>车位号</span>{{ park_type.position_num }}&nbsp;&nbsp;&nbsp;
+                                                <input value="{{ park_type.id }}" name="radiobutton" type="radio">
+                                        </p>
+                                    {% endfor %}
                                 </div>
-                            </div>
+{#                            </div>#}
                             <!--增加部分隐藏 end-->
                             <div class="vessel_conBox_text_button">
                                 <div>
                                     <input type="submit" value="立即缴费" class="el_btn_orange_xsl el_btn btn_by_parking"/>
-                                </div>
-                                <div style="width: 468px;">
-                                    <input style="margin-top: -2px" type="checkbox" name="is_save" value="1"/>
-                                    <label>将车位信息保存到您的账号</label>
                                 </div>
                             </div>
                         </form>
@@ -88,6 +87,12 @@
                     </div>
                     <!--步骤1内容 end-->
                 </div>
+                {% else %}
+                    <div style="height: 300px;">
+                        <h1>首次购买请联系物业！</h1>
+
+                    </div>
+                {% endif %}
             </div>
             <!-- vessel end -->
         </div>
@@ -97,4 +102,23 @@
     </div>
     </div>
 
+{% endblock %}
+{% block script %}
+    <script type="text/javascript">
+        function check_radio(){
+            var flag =false
+            myObj=document.getElementsByName('radiobutton');
+            for(i=0;i<myObj.length;i++){
+                if(myObj[i].checked){
+                    flag=true
+                };
+            };
+            if (flag){
+                  return true;
+            }else{
+                alert('请选择缴费项');
+                return false;
+            }
+        }
+    </script>
 {% endblock %}

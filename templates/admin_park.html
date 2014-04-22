@@ -118,38 +118,81 @@
 
 {% endblock %}
 {% block right_container %}
-    <div style="height:590px;width: 850px;overflow: auto;border-top: 0px;margin-left: 5px;float: left;background-color: #ffffff">
+    <div style="height:500px;width: 850px;overflow: auto;border-top: 0px;margin-left: 5px;float: left;background-color: #ffffff">
+                <div class="vessel vessel_s1" style="margin-bottom: 10px">
+                        <div class="vessel_titBox">
+                             <a href="/parking/fees/?btn_style=1"
+                                class="btn_type btn {% if btn_style == 1 %}btn-primary{% endif %} "
+                                style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 95px">
+                               停车费详情
+                             </a>
+                             <a href="/park_fee_manage/?btn_style=2"
+                               class="btn_type btn {% if btn_style == 2 %}btn-primary{% endif %} "
+                               style="border:1px solid #dcdcdc; border-radius: 0px 0px 0px 0px;height:34px;width: 95px">
+                                停车费管理
+                            </a>
+                        </div>
+                </div>
                 <div>
                     <table>
                         <thead>
-                             <tr>
+                            <tr>
                                 <td>用户</td>
-                                <td>已缴停车费</td>
-                                <td>未缴停车费</td>
-                                <td>状态</td>
+                                <td>车位类型</td>
+                                <td>缴费时间</td>
+                                <td>缴费状态</td>
+                                <td>提醒操作</td>
+                                <td>清空车位</td>
                             </tr>
                         </thead>
                         <tbody>
-                        {% if all_user_info %}
-                           {% for user_info in all_user_info %}
-                                <tr>
-                                <td>{{ user_info.floor }}栋{{ user_info.gate_card }}号&nbsp;&nbsp;户主：{{user_info.profile.username  }}</td>
-                                <td></td>
-                                <td><img src="/static/images/not_pay.png/"/></td>
-                                <td style="text-align:center "id="td_{{user_info.profile.id }}">
-                                        <button name="{{user_info.profile.id }}"class="btn"
-                                         onclick="change_status(this)"
-                                        style="width: 42px;height: 25px;
-                                        background: url('/static/images/urge.png') no-repeat;">
-                                        </button>
-                                </td>
-                                </tr>
-                            {% endfor %}
-                        {% else %}
-                         <tr>
-                            <td colspan="4">暂无用户停车信息</td>
-                         </tr>
-                        {% endif %}
+                            {% if all_user_info %}
+                               {% for user_info in all_user_info %}
+                                    <tr>
+                                    <td>{{ user_info.floor }}栋{{ user_info.gate_card }}号&nbsp;&nbsp;户主：{{user_info.personal_profile.username  }}</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        {% if user_info.pay_status %}
+                                            <img src="/static/images/have_pay.png/"/>
+                                        {% else %}
+                                            <img src="/static/images/not_pay.png/"/>
+                                        {% endif %}
+                                    </td>
+                                    <td style="text-align:center "id="td_{{user_info.personal_profile.id }}">
+                                        {% if user_info.pay_status %}
+                                            <button name="{{user_info.personal_profile.id }}"class="btn" disabled
+                                            style="width: 42px;height: 25px;
+                                            background: url('/static/images/have_pay_btn.png') no-repeat;">
+                                            </button>
+                                        {% else %}
+                                            {% if send_message_status %}
+                                                <span style='color:#ff8f3d'>已催</span>
+                                                {% if user_info.not_pay_num %}
+                                                    <span>{{user_info.not_pay_num }}年未交</span>
+                                                {% endif %}
+                                            {% else %}
+                                                <button name="{{user_info.personal_profile.id }}"class="btn"
+                                                onclick="urge_paying(this)"
+                                                style="width: 42px;height: 25px;
+                                                background: url('/static/images/urge.png') no-repeat;">
+                                                </button>
+                                                {% if user_info.not_pay_num %}
+                                                    <span>{{ user_info.not_pay_num }}年未交</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                             <tr>
+                                <td colspan="4">暂无用户缴费信息</td>
+                             </tr>
+                            {% endif %}
                         </tbody>
 
                     </table>

@@ -36,13 +36,13 @@
                             <form action="/chinapay/payout/" method="post">
                                 <div class="vessel_conBox_step3_box_1">
                                     <p>小&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;区：{{ profile.community.title }}&nbsp;&nbsp;{{ profile.floor }}栋{{ profile.gate_card }}号</p>
-                                    <p>车 &nbsp;牌 &nbsp;号: {{ park_fee.car_number }}</p>
                                     <p>车位类型：{{ park_fee.park_type }}</p>
-                                    <p>续费时间：{{ park_fee.renewal_fees }}个月</p>
-                                    <p>应付金额：<span class="txt" name="pay_money">￥250.00</span></p>
+                                    <p>续费时间：{{ period_parking }}个月</p>
+                                    <p>应付金额：<span class="txt" name="pay_money">￥{{pay_money }}</span></p>
                                     <p>红包抵扣：<span class="txt">￥0.00</span></p>
-                                    <p>实际支付金额：<span class="txt">￥0.00</span></p>
+                                    <p>实际支付金额：<span class="txt">￥{{pay_money }}</span></p>
                                 </div>
+                                <input type="hidden" name="order_num_name" value="{{ order_number }}"/>
                                 <p class="vessel_conBox_text_button2">
                                     <button type="submit" class="el_btn_orange_xsl el_btn"><span class="txt">立即支付</span></button>
                                 </p>

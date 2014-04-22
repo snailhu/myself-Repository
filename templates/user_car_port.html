@@ -45,54 +45,51 @@
                                 </p>
 
                                 <p>
-                                    车 &nbsp;牌 &nbsp;号：{{ car_number }} <input type="hidden"
-                                                                              name="Parking[car_number]"
-                                                                              value="{{ car_number }}"/>
+                                    <span>上次缴费有效期：</span>{{ park_fee.pay_date|date:"Y-m-d" }}至{{ park_fee.deadline |date:"Y-m-d" }}&nbsp;&nbsp;&nbsp;
+                                    <span>车位号</span>{{ park_fee.position_num }}&nbsp;&nbsp;&nbsp;
+                                </p>
+                                <p>
+                                    <span>缴费类型：</span>{{ park_fee.pay_type }}一交&nbsp;&nbsp;&nbsp;
                                 </p>
 
                                 <p>
-                                    车位类型：
-                                    <select name="type_parking" id="type_for_parking">
-                                        <option value="请选择">请选择车位类型</option>
-                                        <option value="买断车位">买断车位</option>
-                                        <option value="租停车位">租停车位</option>
-                                    </select>
+                                    车位类型：{{ park_fee.park_type }}&nbsp;&nbsp;&nbsp;
                                 </p>
                                 <p>
-                                    续费时间：
+                                    可更改续费时长：
                                     <select name="period_parking" id="period_for_parking">
-                                        <option value="请选择">请选择续费时间</option>
-                                        <option value="6">半年</option>
-                                        <option value="12">一年</option>
+                                        <option value="1">请选择续费时间</option>
+                                        <option value="6"onclick="change_delay_time(this)">半年</option>
+                                        <option value="12"onclick="change_delay_time(this)">一年</option>
                                     </select>
                                 </p>
                                 <p>
                                     缴费金额：<span class="txt"> ￥
-                                                <span id="amount_span_for_parking"listPrice="0">100 </span>
-                                                <input type="hidden" name="OthersFees[amount]" value=""id="amount_text_for_parking"/>
+                                                <span id="amount_span_for_parking"listPrice="0">{{ pay_money}}</span>
+                                                <input type="hidden" name="park_fee_id" value="{{park_fee.id }}"/>
                                               </span>
                                 </p>
                             </div>
                             <div class="line"></div>
                             <div class="vessel_conBox_text_button" style="padding:20px 0 4px 0;">
-                                <input type="submit" value="立即支付" id="parkingBtn" class="el_btn_orange_xsl el_btn"/>
+                                <input type="submit" value="提交清单" id="parkingBtn" class="el_btn_orange_xsl el_btn"/>
                             </div>
                             <div class="line"></div>
 
-                            <div class="last_text_box">
-                                    <span class="vessel_conBox_step_head1">
-                                        注意事项：
-                                    </span>
-
-                                <p>
-                                    1、如您的停车卡是老卡，缴费成功后请到管理处激活；
-                                </p>
-
-                                <p>
-                                    2、您可以到管理处更换新卡；
-                                </p>
-
-                            </div>
+{#                            <div class="last_text_box">#}
+{#                                    <span class="vessel_conBox_step_head1">#}
+{#                                        注意事项：#}
+{#                                    </span>#}
+{##}
+{#                                <p>#}
+{#                                    1、如您的停车卡是老卡，缴费成功后请到管理处激活；#}
+{#                                </p>#}
+{##}
+{#                                <p>#}
+{#                                    2、您可以到管理处更换新卡；#}
+{#                                </p>#}
+{##}
+{#                            </div>#}
                         </div>
                     </form>
                 </div>
@@ -117,5 +114,13 @@
                 return true;
             }
         }
+    function change_delay_time(obj){
+        if($(obj).val()==6){
+            $('#amount_span_for_parking').html(parseFloat({{total_money }})/2)
+        }
+        else{
+            $('#amount_span_for_parking').html({{total_money }})
+        }
+    }
     </script>
 {% endblock %}

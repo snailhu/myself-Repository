@@ -194,13 +194,17 @@ class Notification(models.Model):
 
 class Park_fee(models.Model):
     author = models.ForeignKey(ProfileDetail, null=True)
+    pay_type = models.CharField(max_length=250, null=True)
     park_type = models.CharField(max_length=250, null=True)
     renewal_fees = models.IntegerField(default=0)
     car_number = models.CharField(max_length=250, null=True)
     valid_time = models.DateTimeField(default=timezone.now, null=True)
     deadline = models.DateField(null=True)
     send_message =  models.IntegerField(default=0)
+    position_num = models.IntegerField(default=0)
+    order_number = models.IntegerField(max_length=10, null=True)
     pay_date = models.DateField(null=True)
+    pay_status=models.IntegerField(default=0)
 
     def __str__(self):
         return self.car_number
@@ -268,7 +272,9 @@ class Car_Washing(models.Model):
     washing_case = models.CharField(max_length=50)
     other_car_num = models.CharField(max_length=10)
     washing_status = models.IntegerField(default=0)
-
+    order_number = models.CharField(max_length=10, null=True)
+    pay_date=models.DateTimeField(null=True)
+    pay_status=models.IntegerField(default=0)
     def __str__(self):
         return self.author
 
